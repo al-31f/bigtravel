@@ -1,11 +1,14 @@
-import { menuTemplate } from './view/menu.js';
-import { filtersTemplate } from './view/filters.js';
-import { tripCostTemplate } from './view/trip-cost.js';
-import { tripInfoTemplate } from './view/trip-info.js';
-import { tripSortTemplate } from './view/trip-sort.js';
-import { tripPointListTemplate } from './view/trip-point-list.js';
-import { tripPointTemplate } from './view/trip-point.js';
-import { editFormTemplate } from './view/edit-form.js';
+import { renderElement, RenderPosition } from './utils.js';
+
+import SiteMenuView from './view/menu.js';
+import FiltersView from './view/filters.js';
+import TripInfoView from './view/trip-info.js';
+import TripCostView from './view/trip-cost.js';
+import TripPointListView from './view/trip-point-list.js';
+import TripSortView from './view/trip-sort.js';
+import TripPointView from './view/trip-point.js';
+import EditFormView from './view/edit-form.js';
+
 import { genPointsData } from './mock/point-data.js';
 import { genSpecOffersData } from './mock/point-spec-offers-data.js';
 
@@ -23,27 +26,23 @@ console.log(pointsData);
 //console.log(pointData);
 console.log(specOffersData);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
-render(menuElement, menuTemplate(), 'beforeend');
-render(filtersElement, filtersTemplate(), 'beforeend');
-render(tripInfoElement, tripInfoTemplate(), 'afterbegin');
+renderElement(menuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
+renderElement(filtersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
+renderElement(tripInfoElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
 
 const tripCostElement = tripInfoElement.querySelector('.trip-main__trip-info');
 
-render(tripCostElement, tripCostTemplate(pointsData, specOffersData), 'beforeend');
-render(tripSortElement, tripSortTemplate(), 'afterbegin');
-render(tripSortElement, tripPointListTemplate(), 'beforeend');
+renderElement(tripCostElement, new TripCostView(pointsData, specOffersData).getElement(), RenderPosition.BEFOREEND);
+renderElement(tripSortElement, new TripSortView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(tripSortElement, new TripPointListView().getElement(), RenderPosition.BEFOREEND);
 
 const tripPointListElement = tripSortElement.querySelector('.trip-events__list');
 
-render(tripPointListElement, editFormTemplate(pointsData[0]), 'beforeend');
-
+renderElement(tripPointListElement, new EditFormView(pointsData[0]).getElement(), RenderPosition.BEFOREEND);
 
 //рендерим точки маршрута
 for (let i = 0; i < POINTS_NUMBER; i++) {
-  render(tripPointListElement, tripPointTemplate(pointsData[i], specOffersData), 'beforeend');
+  renderElement(tripPointListElement, new TripPointView(pointsData[i], specOffersData).getElement(), RenderPosition.BEFOREEND);
 }
+
 export {pointsData};

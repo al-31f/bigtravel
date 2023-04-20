@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const calculateTripCost = (data, features) => {
 
   let tripCost = 0;
@@ -10,6 +12,31 @@ const calculateTripCost = (data, features) => {
   return tripCost;
 };
 
-export const tripCostTemplate = (data, features) => `<p class="trip-info__cost">
+const createTripCostTemplate = (data, features) => `<p class="trip-info__cost">
   Total: &euro;&nbsp;<span class="trip-info__cost-value">${calculateTripCost(data, features)}</span>
 </p>`;
+
+export default class TripCost {
+  constructor(data, features) {
+    this._data = data;
+    this.features = features;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripCostTemplate(this._data, this.features);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+

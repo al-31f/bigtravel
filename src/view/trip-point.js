@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {createElement} from '../utils.js';
 
 const renderOffer = (offers, point) => {
   let oferrsArray = [];
@@ -27,7 +28,7 @@ const renderOffer = (offers, point) => {
 const favorite = (data) => data.favorite === 'true' ? 'event__favorite-btn--active' : '';
 
 
-export const tripPointTemplate = (data, specOffersData) => `<li class="trip-events__item">
+const createTripPointTemplate = (data, specOffersData) => `<li class="trip-events__item">
 <div class="event">
   <time class="event__date" datetime="2019-03-18">${dayjs(data.begin).format('MMM DD')}</time>
   <div class="event__type">
@@ -60,3 +61,28 @@ export const tripPointTemplate = (data, specOffersData) => `<li class="trip-even
   </button>
 </div>
 </li>`;
+
+
+export default class TripPoint {
+  constructor(data, features) {
+    this._data = data;
+    this.features = features;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPointTemplate(this._data, this.features);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
