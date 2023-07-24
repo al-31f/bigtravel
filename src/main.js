@@ -38,11 +38,26 @@ renderElement(tripSortElement, new TripPointListView().getElement(), RenderPosit
 
 const tripPointListElement = tripSortElement.querySelector('.trip-events__list');
 
-renderElement(tripPointListElement, new EditFormView(pointsData[0]).getElement(), RenderPosition.BEFOREEND);
+//renderElement(tripPointListElement, new EditFormView(pointsData[0]).getElement(), RenderPosition.BEFOREEND);
 
 //рендерим точки маршрута
 for (let i = 0; i < POINTS_NUMBER; i++) {
-  renderElement(tripPointListElement, new TripPointView(pointsData[i], specOffersData).getElement(), RenderPosition.BEFOREEND);
+  const tripPoint = new TripPointView(pointsData[i], specOffersData).getElement();
+  const tripPointEdit = new EditFormView(pointsData[i]).getElement();
+  renderElement(tripPointListElement, tripPoint, RenderPosition.BEFOREEND);
+  //renderElement(tripPointListElement, tripPointEdit, RenderPosition.BEFOREEND);
+  console.log(tripPoint);
+  const editButton = tripPoint.querySelector('.event__rollup-btn');
+  editButton.addEventListener('click', () => {
+    tripPointListElement.replaceChild(tripPointEdit, tripPoint);
+    console.log('click');
+  });
+  const editSubmitButton = tripPointEdit.querySelector('form');
+  editSubmitButton.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    tripPointListElement.replaceChild(tripPoint, tripPointEdit);
+    console.log('submit');
+  });
 }
 
 export {pointsData};

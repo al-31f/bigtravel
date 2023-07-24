@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {createElement} from '../utils.js';
+import AbstractView from './abstract.js';
 
 const renderOffer = (offers, point) => {
   let oferrsArray = [];
@@ -63,8 +63,9 @@ const createTripPointTemplate = (data, specOffersData) => `<li class="trip-event
 </li>`;
 
 
-export default class TripPoint {
+export default class TripPoint extends AbstractView {
   constructor(data, features) {
+    super();
     this._data = data;
     this.features = features;
     this._element = null;
@@ -74,15 +75,4 @@ export default class TripPoint {
     return createTripPointTemplate(this._data, this.features);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

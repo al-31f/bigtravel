@@ -1,5 +1,30 @@
-import { pointData, pointsData } from '../main.js';
+import { pointsData } from '../main.js';
 
+/*
+{
+  type: flight,
+    options: [
+     {
+       title: Add luggage,
+       prise: 15,
+       checked: false,
+     },
+
+     {
+       title: Add luggage,
+       prise: 15,
+       checked: false,
+     },
+  ]
+}
+Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant
+const defaultOffers = [
+  {
+
+  }
+]
+
+*/
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 export const genSpecOffersData = () => {
