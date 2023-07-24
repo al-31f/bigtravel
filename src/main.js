@@ -42,22 +42,30 @@ const tripPointListElement = tripSortElement.querySelector('.trip-events__list')
 
 //рендерим точки маршрута
 for (let i = 0; i < POINTS_NUMBER; i++) {
-  const tripPoint = new TripPointView(pointsData[i], specOffersData).getElement();
-  const tripPointEdit = new EditFormView(pointsData[i]).getElement();
-  renderElement(tripPointListElement, tripPoint, RenderPosition.BEFOREEND);
-  //renderElement(tripPointListElement, tripPointEdit, RenderPosition.BEFOREEND);
+  const tripPoint = new TripPointView(pointsData[i], specOffersData);
+  const tripPointEdit = new EditFormView(pointsData[i]);
+  renderElement(tripPointListElement, tripPoint.getElement(), RenderPosition.BEFOREEND);
   console.log(tripPoint);
-  const editButton = tripPoint.querySelector('.event__rollup-btn');
-  editButton.addEventListener('click', () => {
-    tripPointListElement.replaceChild(tripPointEdit, tripPoint);
+
+
+  //открывает форму редактирования по стрелке
+  tripPoint.setEditClickHandler(() => {
+    tripPointListElement.replaceChild(tripPointEdit.getElement(), tripPoint.getElement());
     console.log('click');
   });
-  const editSubmitButton = tripPointEdit.querySelector('form');
-  editSubmitButton.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    tripPointListElement.replaceChild(tripPoint, tripPointEdit);
+
+  //скрывает форму редактирования по стрелке
+  tripPointEdit.setEditClickHandler(() => {
+    tripPointListElement.replaceChild(tripPoint.getElement(), tripPointEdit.getElement());
+    console.log('click');
+  });
+
+  //скрывает форму редактирования по сабмиту
+  tripPointEdit.setSubmitForm(() => {
+    tripPointListElement.replaceChild(tripPoint.getElement(), tripPointEdit.getElement());
     console.log('submit');
   });
+
 }
 
 export {pointsData};
