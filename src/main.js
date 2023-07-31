@@ -1,4 +1,4 @@
-import { renderElement, RenderPosition } from './utils.js';
+import { renderElement, RenderPosition, replace, remove} from './utils/render.js';
 
 import SiteMenuView from './view/menu.js';
 import FiltersView from './view/filters.js';
@@ -26,15 +26,15 @@ console.log(pointsData);
 //console.log(pointData);
 console.log(specOffersData);
 
-renderElement(menuElement, new SiteMenuView().getElement(), RenderPosition.BEFOREEND);
-renderElement(filtersElement, new FiltersView().getElement(), RenderPosition.BEFOREEND);
-renderElement(tripInfoElement, new TripInfoView().getElement(), RenderPosition.AFTERBEGIN);
+renderElement(menuElement, new SiteMenuView(), RenderPosition.BEFOREEND);
+renderElement(filtersElement, new FiltersView(), RenderPosition.BEFOREEND);
+renderElement(tripInfoElement, new TripInfoView(), RenderPosition.AFTERBEGIN);
 
 const tripCostElement = tripInfoElement.querySelector('.trip-main__trip-info');
 
-renderElement(tripCostElement, new TripCostView(pointsData, specOffersData).getElement(), RenderPosition.BEFOREEND);
-renderElement(tripSortElement, new TripSortView().getElement(), RenderPosition.AFTERBEGIN);
-renderElement(tripSortElement, new TripPointListView().getElement(), RenderPosition.BEFOREEND);
+renderElement(tripCostElement, new TripCostView(pointsData, specOffersData), RenderPosition.BEFOREEND);
+renderElement(tripSortElement, new TripSortView(), RenderPosition.AFTERBEGIN);
+renderElement(tripSortElement, new TripPointListView(), RenderPosition.BEFOREEND);
 
 const tripPointListElement = tripSortElement.querySelector('.trip-events__list');
 
@@ -50,19 +50,19 @@ for (let i = 0; i < POINTS_NUMBER; i++) {
 
   //открывает форму редактирования по стрелке
   tripPoint.setEditClickHandler(() => {
-    tripPointListElement.replaceChild(tripPointEdit.getElement(), tripPoint.getElement());
+    replace(tripPointEdit,tripPoint);
     console.log('click');
   });
 
   //скрывает форму редактирования по стрелке
   tripPointEdit.setEditClickHandler(() => {
-    tripPointListElement.replaceChild(tripPoint.getElement(), tripPointEdit.getElement());
+    replace(tripPoint, tripPointEdit);
     console.log('click');
   });
 
   //скрывает форму редактирования по сабмиту
   tripPointEdit.setSubmitForm(() => {
-    tripPointListElement.replaceChild(tripPoint.getElement(), tripPointEdit.getElement());
+    replace(tripPoint, tripPointEdit);
     console.log('submit');
   });
 
