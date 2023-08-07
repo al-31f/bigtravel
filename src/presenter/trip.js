@@ -1,11 +1,3 @@
-//import BoardView from '../view/board.js';
-//import SortView from '../view/sort.js';
-//import TaskListView from '../view/task-list.js';
-//import NoTaskView from '../view/no-task.js';
-//import TaskView from '../view/task.js';
-//import TaskEditView from '../view/task-edit.js';
-//import LoadMoreButtonView from '../view/load-more-button.js';
-//import {render, RenderPosition} from '../utils/render.js';
 import SiteMenuView from '../view/menu.js';
 import FiltersView from '../view/filters.js';
 import TripInfoView from '../view/trip-info.js';
@@ -14,8 +6,9 @@ import TripPointListView from '../view/trip-point-list.js';
 import TripCostView from '../view/trip-cost.js';
 import TripPointView from '../view/trip-point.js';
 import EditFormView from '../view/edit-form.js';
+import TripPointPresenter from '../presenter/trip-point.js';
+
 import { renderElement, RenderPosition, replace, remove} from '../utils/render.js';
-//import TripPointView from './view/trip-point.js';
 
 const POINTS_NUMBER = 20;
 
@@ -29,11 +22,6 @@ export default class Trip {
     this._tripInfoComponent = new TripInfoView();
     this._tripSortComponent = new TripSortView();
     this._tripPointListComponent = new TripPointListView();
-    
-    //this._tripComponent = new BoardView();
-    //this._sortComponent = new SortView();
-    //this._taskListComponent = new TaskListView();
-    //this._noTaskComponent = new NoTaskView();
   }
 
   init(pointsData, specOffersData) {
@@ -60,35 +48,9 @@ export default class Trip {
   }
 
   _renderPoint(pointData, specOfferData) {
-    // отрисовка одной точки,
-    // текущая функция renderTask в main.js
-    const tripPoint = new TripPointView(pointData, specOfferData);
-    const tripPointEdit = new EditFormView(pointData);
-
-    //const tripEventsElement = document.querySelector('.trip-events');
-    const tripPointListElement = this._tripMainContainer.querySelector('.trip-events__list');
-
-    renderElement(tripPointListElement, tripPoint.getElement(), RenderPosition.BEFOREEND);
-    console.log(tripPoint);
-
-
-    //открывает форму редактирования по стрелке
-    tripPoint.setEditClickHandler(() => {
-      replace(tripPointEdit,tripPoint);
-      console.log('click');
-    });
-
-    //скрывает форму редактирования по стрелке
-    tripPointEdit.setEditClickHandler(() => {
-      replace(tripPoint, tripPointEdit);
-      console.log('click');
-    });
-
-    //скрывает форму редактирования по сабмиту
-    tripPointEdit.setSubmitForm(() => {
-      replace(tripPoint, tripPointEdit);
-      console.log('submit');
-    });
+    //отрисовка одной точки
+    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer);
+    tripPointPresenter.init(pointData, specOfferData);
   }
 
   _renderPoints() {
