@@ -189,11 +189,11 @@ export default class EditForm extends AbstractView {
 
   _submitForm(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editSubmit();
   }
 
   setSubmitForm(callback) {
-    this._callback.editClick = callback;
+    this._callback.editSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._submitForm);
   }
 }
