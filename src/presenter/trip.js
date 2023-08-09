@@ -7,7 +7,7 @@ import TripCostView from '../view/trip-cost.js';
 import {updateItem} from '../utils/common.js';
 import TripPointPresenter from '../presenter/trip-point.js';
 
-import { renderElement, RenderPosition, replace, remove } from '../utils/render.js';
+import { renderElement, RenderPosition} from '../utils/render.js';
 
 const POINTS_NUMBER = 20;
 
@@ -23,6 +23,7 @@ export default class Trip {
     this._tripSortComponent = new TripSortView();
     this._tripPointListComponent = new TripPointListView();
     this._handleTripPointChange = this._handleTripPointChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(pointsData, specOffersData) {
@@ -43,6 +44,12 @@ export default class Trip {
     this._renderBoard();
   }
 
+  _handleModeChange() {
+    Object
+      .values(this._tripPointPresenter)
+      .forEach((presenter) => presenter.resetView());
+  }
+
   _handleTripPointChange(updatedTripPoint) {
     this._boardTasks = updateItem(this._boardTasks, updatedTripPoint);
     console.log(updatedTripPoint , updatedTripPoint.id);
@@ -56,7 +63,7 @@ export default class Trip {
 
   _renderPoint(pointData, specOfferData) {
     //отрисовка одной точки
-    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleTripPointChange);
+    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleTripPointChange, this._handleModeChange);
     tripPointPresenter.init(pointData, specOfferData);
     this._tripPointPresenter[pointData.id] = tripPointPresenter;
   }

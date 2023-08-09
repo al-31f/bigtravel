@@ -3,13 +3,20 @@ import TripPointView from '../view/trip-point.js';
 import EditFormView from '../view/edit-form.js';
 import { renderElement, RenderPosition, replace, remove} from '../utils/render.js';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class TripPoint {
-  constructor(tripMainContainer, changeData) {
+  constructor(tripMainContainer, changeData, changeMode) {
     this._tripMainContainer = tripMainContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._tripPointComponent = null;
     this._tripPointEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._tripPointListComponent = new TripPointListView();
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
@@ -18,8 +25,7 @@ export default class TripPoint {
   init(pointData, specOfferData) {
     this._pointData = pointData;
     this.specOfferData = specOfferData;
-
-  
+    this._mode = Mode.DEFAULT;
 
     this._renderPoint();
   }
@@ -28,32 +34,28 @@ export default class TripPoint {
 
     const prevTripPointComponent = this._tripPointComponent;
     const prevTripPointEditComponent = this._tripPointEditComponent;
-    // отрисовка одной точки,
     // текущая функция renderTask в main.js
     this._tripPointComponent = new TripPointView(this._pointData, this.specOfferData);
     this._tripPointEditComponent = new EditFormView(this._pointData);
 
-    //const tripEventsElement = document.querySelector('.trip-events');
     const tripPointListElement = this._tripMainContainer.querySelector('.trip-events__list');
 
-    //renderElement(tripPointListElement, this._tripPointComponent.getElement(), RenderPosition.BEFOREEND);
-
     this._tripPointComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    //открывает форму редактирования по стрелке (открытие и скрытие формы вынести в отдельные методы)
-    this._tripPointComponent.setEditClickHandler(() => {
-      replace(this._tripPointEditComponent,this._tripPointComponent);
-      console.log('click open');
-    });
+
+
+    //открывает форму редактирования по стрелке
+    this._replacePointToEditForm();
+
 
     //скрывает форму редактирования по стрелке
     this._tripPointEditComponent.setEditClickHandler(() => {
-      replace(this._tripPointComponent, this._tripPointEditComponent);
+      this._replaceEditFormToPoint();
       console.log('click close');
     });
 
     //скрывает форму редактирования по сабмиту
     this._tripPointEditComponent.setSubmitForm(() => {
-      replace(this._tripPointComponent, this._tripPointEditComponent);
+      this._replaceEditFormToPoint();
       console.log('submit');
     });
 
@@ -64,11 +66,11 @@ export default class TripPoint {
     }
 
     //заменяем элемент на новый, если произошли изменения данных
-    if (tripPointListElement.contains(prevTripPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._tripPointComponent, prevTripPointComponent);
     }
 
-    if (tripPointListElement.contains(prevTripPointEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._tripPointEditComponent, prevTripPointEditComponent);
     }
 
@@ -77,10 +79,29 @@ export default class TripPoint {
 
   }
 
+  _replacePointToEditForm() {
+    this._tripPointComponent.setEditClickHandler(() => {
+      replace(this._tripPointEditComponent,this._tripPointComponent);
+      console.log('click open');
+      this._changeMode();
+      this._mode = Mode.EDITING;
+    });
+  }
+
+  _replaceEditFormToPoint() {
+    replace(this._tripPointComponent, this._tripPointEditComponent);
+    this._mode = Mode.DEFAULT;
+  }
 
   destroy() {
     remove(this._tripPointComponent);
     remove(this._tripPointEditComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditFormToPoint();
+    }
   }
 
   _handleFavoriteClick() {
