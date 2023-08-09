@@ -4,11 +4,10 @@ import TripInfoView from '../view/trip-info.js';
 import TripSortView from '../view/trip-sort.js';
 import TripPointListView from '../view/trip-point-list.js';
 import TripCostView from '../view/trip-cost.js';
-import TripPointView from '../view/trip-point.js';
-import EditFormView from '../view/edit-form.js';
+import {updateItem} from '../utils/common.js';
 import TripPointPresenter from '../presenter/trip-point.js';
 
-import { renderElement, RenderPosition, replace, remove} from '../utils/render.js';
+import { renderElement, RenderPosition, replace, remove } from '../utils/render.js';
 
 const POINTS_NUMBER = 20;
 
@@ -16,12 +15,14 @@ export default class Trip {
   constructor(tripInfoContainer, tripMainContainer) {
     this._tripInfoContainer = tripInfoContainer;
     this._tripMainContainer = tripMainContainer;
+    this._tripPointPresenter = {};
 
     this._tripSiteMenuComponent = new SiteMenuView();
     this._tripFiltersComponent = new FiltersView();
     this._tripInfoComponent = new TripInfoView();
     this._tripSortComponent = new TripSortView();
     this._tripPointListComponent = new TripPointListView();
+    this._handleTripPointChange = this._handleTripPointChange.bind(this);
   }
 
   init(pointsData, specOffersData) {
@@ -42,6 +43,12 @@ export default class Trip {
     this._renderBoard();
   }
 
+  _handleTripPointChange(updatedTripPoint) {
+    this._boardTasks = updateItem(this._boardTasks, updatedTripPoint);
+    console.log(updatedTripPoint , updatedTripPoint.id);
+    this._tripPointPresenter[updatedTripPoint.id].init(updatedTripPoint, this.boardSpecOffers);
+  }
+
   _renderSort() {
     // Метод для рендеринга сортировки
     renderElement(this._tripMainContainer, this._tripSortComponent, RenderPosition.AFTERBEGIN);
@@ -49,8 +56,9 @@ export default class Trip {
 
   _renderPoint(pointData, specOfferData) {
     //отрисовка одной точки
-    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer);
+    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleTripPointChange);
     tripPointPresenter.init(pointData, specOfferData);
+    this._tripPointPresenter[pointData.id] = tripPointPresenter;
   }
 
   _renderPoints() {
@@ -60,6 +68,12 @@ export default class Trip {
     }
   }
 
+  _clearPointsList() {
+    Object
+      .values(this._tripPointPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._tripPointPresenter = {};
+  }
 
   _renderNoPolints() {
     // Метод для рендеринга заглушки
@@ -71,5 +85,6 @@ export default class Trip {
     // бОльшая часть текущей функции renderBoard в main.js
     renderElement(this._tripMainContainer, this._tripPointListComponent, RenderPosition.BEFOREEND);
     this._renderPoints();
+
   }
 }
