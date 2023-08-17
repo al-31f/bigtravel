@@ -36,7 +36,7 @@ export default class TripPoint {
     const prevTripPointEditComponent = this._tripPointEditComponent;
     // текущая функция renderTask в main.js
     this._tripPointComponent = new TripPointView(this._pointData, this.specOfferData);
-    this._tripPointEditComponent = new EditFormView(this._pointData);
+    this._tripPointEditComponent = new EditFormView(this._pointData, this.specOfferData);
 
     const tripPointListElement = this._tripMainContainer.querySelector('.trip-events__list');
 

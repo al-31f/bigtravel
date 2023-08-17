@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
+//import {nanoid} from 'nanoid';
 
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -62,7 +62,7 @@ export const genPointData = () => {
     duration: dates[2],
     price: getRandomInt(5 , 200),
     description: genDescription(),
-    imsges: genImages(),
+    images: genImages(),
     favorite: isFavorite(),
     offers: [],
   };

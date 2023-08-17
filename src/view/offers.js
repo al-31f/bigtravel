@@ -4,4 +4,3 @@
 //<span class="event__offer-price">20</span>
 //</li>`;
 //удалить файл
-

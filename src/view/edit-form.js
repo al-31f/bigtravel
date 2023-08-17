@@ -1,7 +1,45 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
+import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
 
-const creatEeditFormTemplate = (data) => `<li class="trip-events__item">
+const renderOffers = (data, offersData) => {
+  let offers = '';
+  if (OFFER_TITLES[data.type] !== undefined) {
+    let isChecked = '';
+    for (let i = 0; i < OFFER_TITLES[data.type].length; i++) {
+
+      for (let j = 0; j < data.offers.length; j++) {
+        if (OFFER_TITLES[data.type][i] === offersData.filter((offerData) => offerData.id.toString() === data.offers[j].toString())[0].title) {
+        // если название оффера равно названию оффера, айди которого есть в массиве data.offers
+          isChecked = 'checked';
+        }
+        else {
+          isChecked = '';
+        }
+      }
+
+      const offer = `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isChecked}>
+      <label class="event__offer-label" for="event-offer-${data.type}-${i}">
+        <span class="event__offer-title">${OFFER_TITLES[data.type][i]}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${REAL_OFFER_PRICES[data.type][i]}</span>
+      </label>
+    </div>`;
+
+      offers = offers + offer;
+    }
+  }
+  //console.log(data.type);
+  if (data.offers.length > 0) {
+    //console.log('data', data.offers);
+  }
+  
+  return offers;
+};
+
+
+const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__item">
 <form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
@@ -107,6 +145,21 @@ const creatEeditFormTemplate = (data) => `<li class="trip-events__item">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
+      ${renderOffers(data, offersData)}
+      
+
+      </div>
+    </section>
+
+    <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      <p class="event__destination-description">${data.description}</p>
+    </section>
+  </section>
+</form>
+</li>`;
+
+/*
         <div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
           <label class="event__offer-label" for="event-offer-luggage-1">
@@ -151,21 +204,12 @@ const creatEeditFormTemplate = (data) => `<li class="trip-events__item">
             <span class="event__offer-price">40</span>
           </label>
         </div>
-      </div>
-    </section>
-
-    <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${data.description}</p>
-    </section>
-  </section>
-</form>
-</li>`;
-
+*/
 export default class EditForm extends AbstractView {
-  constructor(data) {
+  constructor(data, offersData) {
     super();
     this._data = data;
+    this._offersData = offersData;
     this._element = null;
 
     this._editClickHandler = this._editClickHandler.bind(this);
@@ -174,7 +218,7 @@ export default class EditForm extends AbstractView {
   }
 
   getTemplate() {
-    return creatEeditFormTemplate(this._data);
+    return creatEeditFormTemplate(this._data, this._offersData);
   }
 
   _editClickHandler(evt) {

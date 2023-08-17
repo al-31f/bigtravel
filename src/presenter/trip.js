@@ -6,6 +6,8 @@ import TripPointListView from '../view/trip-point-list.js';
 import TripCostView from '../view/trip-cost.js';
 import {updateItem} from '../utils/common.js';
 import TripPointPresenter from '../presenter/trip-point.js';
+import {sortTaskDown, comparePrice, compareDuration} from '../utils/trip-point.js';
+import {SortType} from '../consts.js';
 
 import { renderElement, RenderPosition} from '../utils/render.js';
 
@@ -16,6 +18,7 @@ export default class Trip {
     this._tripInfoContainer = tripInfoContainer;
     this._tripMainContainer = tripMainContainer;
     this._tripPointPresenter = {};
+    this._currentSortType = SortType.DEFAULT;
 
     this._tripSiteMenuComponent = new SiteMenuView();
     this._tripFiltersComponent = new FiltersView();
@@ -24,6 +27,7 @@ export default class Trip {
     this._tripPointListComponent = new TripPointListView();
     this._handleTripPointChange = this._handleTripPointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(pointsData, specOffersData) {
@@ -56,9 +60,52 @@ export default class Trip {
     this._tripPointPresenter[updatedTripPoint.id].init(updatedTripPoint, this.boardSpecOffers);
   }
 
+  _sortTasks(sortType) {
+    // 2. Этот исходный массив задач необходим,
+    // потому что для сортировки мы будем мутировать
+    // массив в свойстве _boardTasks
+    switch (sortType) {
+
+      case SortType.DEFAULT:
+        this._boardTasks.sort(sortTaskDown);
+        break;
+
+        // 3. А когда пользователь захочет "вернуть всё, как было",
+        // мы просто запишем в _boardTasks исходный массив
+        //this._boardTasks = this._sourcedBoardTasks.slice();
+
+      case SortType.PRICE_DOWN:
+        this._boardTasks.sort(comparePrice);
+        break;
+
+      case SortType.TIME_DOWN:
+        this._boardTasks.sort(compareDuration);
+        break;
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    // - Сортируем задачи
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortTasks(sortType);
+    console.log(sortType);
+    // - Очищаем список
+    // - Рендерим список заново
+    this._clearPointsList();
+    //this._clearTaskList();
+    this._renderPoints();
+    //this._renderTaskList();
+  }
+
   _renderSort() {
     // Метод для рендеринга сортировки
     renderElement(this._tripMainContainer, this._tripSortComponent, RenderPosition.AFTERBEGIN);
+    this._tripSortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderPoint(pointData, specOfferData) {
@@ -91,6 +138,9 @@ export default class Trip {
     // Метод для инициализации (начала работы) модуля,
     // бОльшая часть текущей функции renderBoard в main.js
     renderElement(this._tripMainContainer, this._tripPointListComponent, RenderPosition.BEFOREEND);
+    //console.log(this._boardTasks);
+    this._sortTasks(this._currentSortType);
+    console.log(this._boardTasks);
     this._renderPoints();
 
   }
