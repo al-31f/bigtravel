@@ -5,21 +5,27 @@ import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js
 const renderOffers = (data, offersData) => {
   let offers = '';
   if (OFFER_TITLES[data.type] !== undefined) {
+
     let isChecked = '';
     for (let i = 0; i < OFFER_TITLES[data.type].length; i++) {
-
+      const isCheckedArray = new Array(OFFER_TITLES[data.type].length);
       for (let j = 0; j < data.offers.length; j++) {
         if (OFFER_TITLES[data.type][i] === offersData.filter((offerData) => offerData.id.toString() === data.offers[j].toString())[0].title) {
         // если название оффера равно названию оффера, айди которого есть в массиве data.offers
           isChecked = 'checked';
+          isCheckedArray[i] = isChecked;
         }
-        else {
-          isChecked = '';
-        }
+        //else {
+        //  isChecked = '';
+        //  isCheckedArray[i] = isChecked;
+        //}
+        //console.log(isCheckedArray, 'i=', i,'j=' , j);
       }
 
+      //console.log(OFFER_TITLES[data.type][i], isChecked);
+
       const offer = `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isChecked}>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isCheckedArray[i]}>
       <label class="event__offer-label" for="event-offer-${data.type}-${i}">
         <span class="event__offer-title">${OFFER_TITLES[data.type][i]}</span>
         &plus;&euro;&nbsp;
@@ -34,7 +40,7 @@ const renderOffers = (data, offersData) => {
   if (data.offers.length > 0) {
     //console.log('data', data.offers);
   }
-  
+
   return offers;
 };
 

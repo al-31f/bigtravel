@@ -140,7 +140,7 @@ export default class Trip {
     renderElement(this._tripMainContainer, this._tripPointListComponent, RenderPosition.BEFOREEND);
     //console.log(this._boardTasks);
     this._sortTasks(this._currentSortType);
-    console.log(this._boardTasks);
+    //console.log(this._boardTasks);
     this._renderPoints();
 
   }
