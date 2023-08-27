@@ -23,27 +23,43 @@ const generateDate = () => {
 };
 
 const isFavorite = () => getRandomInt(0, 1) === 1 ? 'true' : 'false';
+
+export const DESTINATIONS = ['Istanbul', 'Barcelona', 'Porto', 'Santiago', 'Bordo', 'Paris', 'Praha'];
+
+const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. ',
+  'Fusce tristique felis at fermentum pharetra. ',
+  'Aliquam id orci ut lectus varius viverra. ',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. ',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. ',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. ',
+  'Sed sed nisi sed augue convallis suscipit in sed felis. ',
+  'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. ',
+  'In rutrum ac purus sit amet tempus. '];
+
+
+const genDescription = () => {
+  let description = '';
+  for (let i = 0; i < getRandomInt(1, 5); i++) {
+    description = description + DESCRIPTIONS[getRandomInt(0, DESCRIPTIONS.length-1)];
+  }
+  return description;
+};
+
+
+const genDestinDescripts = (dests) => {
+  const destDescripts = {};
+  dests.forEach((dest) => {
+    destDescripts[dest] = genDescription();
+  });
+  return destDescripts;
+};
+
+export const destinDescripts = genDestinDescripts(DESTINATIONS);
+
 export const genPointData = () => {
   const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
-  const DESTINATIONS = ['Istanbul', 'Barcelona', 'Porto', 'Santiago', 'Bordo', 'Paris', 'Praha'];
-  const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. ',
-    'Fusce tristique felis at fermentum pharetra. ',
-    'Aliquam id orci ut lectus varius viverra. ',
-    'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. ',
-    'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. ',
-    'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. ',
-    'Sed sed nisi sed augue convallis suscipit in sed felis. ',
-    'Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. ',
-    'In rutrum ac purus sit amet tempus. '];
-  const dates = generateDate();
 
-  const genDescription = () => {
-    let description = '';
-    for (let i = 0; i < getRandomInt(1, 5); i++) {
-      description = description + DESCRIPTIONS[getRandomInt(0, DESCRIPTIONS.length-1)];
-    }
-    return description;
-  };
+  const dates = generateDate();
 
   const genImages = () => {
     const images = [];
@@ -53,15 +69,16 @@ export const genPointData = () => {
     return images;
   };
 
+  const pointDestination = DESTINATIONS[getRandomInt(0, DESTINATIONS.length - 1)];
   const pointData = {
     id: 0,
     type: POINT_TYPES[getRandomInt(0, POINT_TYPES.length - 1)].toLocaleLowerCase(),
-    destination: DESTINATIONS[getRandomInt(0, DESTINATIONS.length - 1)],
+    destination: pointDestination,
     begin: dates[0],
     end: dates[1],
     duration: dates[2],
     price: getRandomInt(5 , 200),
-    description: genDescription(),
+    description: destinDescripts[pointDestination],
     images: genImages(),
     favorite: isFavorite(),
     offers: [],

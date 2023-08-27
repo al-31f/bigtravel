@@ -1,6 +1,20 @@
 import dayjs from 'dayjs';
 import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
+import {DESTINATIONS, destinDescripts} from '../mock/point-data.js';
+
+
+const renderDestinationList = (destinations) => {
+  //console.log(destinations);
+  let destinationList ='';
+  destinations.forEach((destination) => {
+    const destinationElement = `<option value="${destination}"></option>`;
+    destinationList = destinationList + destinationElement;
+  });
+  return destinationList;
+};
+
 
 const renderOffers = (data, offersData) => {
   let offers = '';
@@ -90,7 +104,7 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
           </div>
 
           <div class="event__type-item">
-            <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+            <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" >
             <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
           </div>
 
@@ -118,9 +132,7 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${data.destination}" list="destination-list-1">
       <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
+        ${renderDestinationList(DESTINATIONS)}
       </datalist>
     </div>
 
@@ -211,20 +223,25 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
           </label>
         </div>
 */
-export default class EditForm extends AbstractView {
+export default class EditForm extends SmartView {
   constructor(data, offersData) {
     super();
-    this._data = data;
+    //this._data = data;
+    this._pointState = EditForm.parseDataToState(data);
     this._offersData = offersData;
     this._element = null;
 
     this._editClickHandler = this._editClickHandler.bind(this);
 
     this._submitForm = this._submitForm.bind(this);
+
+    this._onPointTypeChange = this._onPointTypeChange.bind(this);
+
+    this._onPointDestinationInput = this._onPointDestinationInput.bind(this);
   }
 
   getTemplate() {
-    return creatEeditFormTemplate(this._data, this._offersData);
+    return creatEeditFormTemplate(this._pointState, this._offersData);
   }
 
   _editClickHandler(evt) {
@@ -246,5 +263,77 @@ export default class EditForm extends AbstractView {
     this._callback.editSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._submitForm);
   }
-}
 
+  _onPointTypeChange(evt) {
+    evt.preventDefault();
+    this._callback.pointTypeChange();
+    this.updateData({
+      type : evt.target.value,
+    });
+    console.log(this._pointState);
+  }
+
+  pointTypeChange(callback) {
+    this._callback.pointTypeChange = callback;
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._onPointTypeChange);
+  }
+
+  //Обработка ввода города !при сохранении удалить флаг justEdit
+  _onPointDestinationInput(evt) {
+
+    this.updateData({
+      destination: evt.target.value,
+      description: '',
+
+    });
+
+    if (!DESTINATIONS.includes(evt.target.value)) {
+      return this.updateData({
+        destination: evt.target.value,
+        description: '',
+        justEdit: true,
+      });
+    }
+    evt.preventDefault();
+    this.updateData({
+      destination: evt.target.value,
+      description: destinDescripts[evt.target.value],
+      justEdit: false,
+    });
+
+  }
+
+  pointDestinationInput(callback) {
+    this._callback.pointDestinationInput = callback;
+    this.getElement().querySelector('.event__input--destination').addEventListener('input', this._onPointDestinationInput);
+  }
+
+
+  static parseDataToState(data) {
+    return Object.assign(
+      {},
+      data,
+    );
+  }
+
+  static parseStateToData(state) {
+    return Object.assign(
+      {},
+      state,
+    );
+  }
+
+  resetInput(data) {
+    this.updateData(EditForm.parseDataToState(data));
+  }
+
+  _restoreHandlers() {
+    this.setEditClickHandler(this._callback.editClick);
+    this.setSubmitForm(this._callback.editSubmit);
+
+    this.pointTypeChange(this._callback.pointTypeChange);
+    this.pointDestinationInput(this._callback.pointDestinationInput);
+  }
+
+
+}

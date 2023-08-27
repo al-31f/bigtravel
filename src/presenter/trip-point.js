@@ -47,8 +47,10 @@ export default class TripPoint {
     this._replacePointToEditForm();
 
 
+
     //скрывает форму редактирования по стрелке
     this._tripPointEditComponent.setEditClickHandler(() => {
+      this._tripPointEditComponent.resetInput(this._pointData);
       this._replaceEditFormToPoint();
       console.log('click close');
     });
@@ -59,7 +61,17 @@ export default class TripPoint {
       console.log('submit');
     });
 
-    //отрисовка точки после проаерки
+    //сменa типа точки путешествия
+    this._tripPointEditComponent.pointTypeChange(() => {
+      //console.log('change type', this._tripPointComponent);
+    });
+
+    //ввод города точки путешествия
+    this._tripPointEditComponent.pointDestinationInput(() => {
+      console.log('change Input', this._tripPointComponent);
+    });
+
+    //отрисовка точки после проверки
     if (prevTripPointComponent === null || prevTripPointEditComponent === null) {
       renderElement(tripPointListElement, this._tripPointComponent.getElement(), RenderPosition.BEFOREEND);
       return;
@@ -115,4 +127,5 @@ export default class TripPoint {
       ),
     );
   }
+
 }
