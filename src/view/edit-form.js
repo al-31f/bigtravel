@@ -1,9 +1,13 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract.js';
+//import AbstractView from './abstract.js';
 import SmartView from './smart.js';
 import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
 import {DESTINATIONS, destinDescripts} from '../mock/point-data.js';
+import {compareTwoDates} from '../utils/trip-point.js';
 
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const renderDestinationList = (destinations) => {
   //console.log(destinations);
@@ -229,6 +233,8 @@ export default class EditForm extends SmartView {
     //this._data = data;
     this._pointState = EditForm.parseDataToState(data);
     this._offersData = offersData;
+    this._datePickerBeginDate = null;
+    this._datePickerEndDate = null;
     this._element = null;
 
     this._editClickHandler = this._editClickHandler.bind(this);
@@ -238,6 +244,11 @@ export default class EditForm extends SmartView {
     this._onPointTypeChange = this._onPointTypeChange.bind(this);
 
     this._onPointDestinationInput = this._onPointDestinationInput.bind(this);
+    this._onDateBeginChange = this._onDateBeginChange.bind(this);
+    this._onDateEndChange = this._onDateEndChange.bind(this);
+    this._setDatepicker(this._datePickerBeginDate, true);
+    this._setDatepicker(this._datePickerEndDate);
+    
   }
 
   getTemplate() {
@@ -333,7 +344,64 @@ export default class EditForm extends SmartView {
 
     this.pointTypeChange(this._callback.pointTypeChange);
     this.pointDestinationInput(this._callback.pointDestinationInput);
+
+    this._setDatepicker(this._datePickerBeginDate, true);
+    this._setDatepicker(this._datePickerEndDate);
   }
 
+  _setDatepicker(datePicker, flag) {
+    if (datePicker) {
+      // В случае обновления компонента удаляем вспомогательные DOM-элементы,
+      // которые создает flatpickr при инициализации
+      datePicker.destroy();
+      datePicker = null;
+    }
 
+    if (flag) {
+      // flatpickr есть смысл инициализировать только в случае,
+      // если поле выбора даты доступно для заполнения
+      datePicker = flatpickr(
+        this.getElement().querySelector('[name="event-start-time"]'),
+        {
+          dateFormat: 'd/m/y H:i',
+          defaultDate: this._pointState.begin,
+          onChange: this._onDateBeginChange, // На событие flatpickr передаём наш колбэк
+        },
+      );
+      return;
+    }
+
+    datePicker = flatpickr(
+      this.getElement().querySelector('[name="event-end-time"]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._pointState.end,
+        onChange: this._onDateEndChange, // На событие flatpickr передаём наш колбэк
+      },
+    );
+  }
+
+  _onDateBeginChange(newSelectedDate) {
+    if (!compareTwoDates(newSelectedDate, this._pointState.end)) {
+      this.updateData({
+        begin: newSelectedDate[0],
+        end: newSelectedDate[0],
+      });
+    }
+
+    this.updateData({
+      begin: newSelectedDate[0],
+    });
+  }
+
+  _onDateEndChange(newSelectedDate) {
+    if (!compareTwoDates(this._pointState.begin, newSelectedDate)) {
+      newSelectedDate = this._pointState.begin;
+    }
+
+    this.updateData({
+      end: newSelectedDate,
+    });
+  }
 }
+

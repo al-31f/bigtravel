@@ -50,3 +50,12 @@ export const compareDuration = (pointA, pointB) => {
   const pointDurationB = pointB.end - pointB.begin;
   return pointDurationB - pointDurationA;
 };
+
+export const compareTwoDates = (dateBegin, dateEnd) => {
+  if (dayjs(dateEnd) > dayjs(dateBegin)) {
+    return true;
+  }
+  else {
+    return false;
+  }
+};
