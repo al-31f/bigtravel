@@ -248,7 +248,7 @@ export default class EditForm extends SmartView {
     this._onDateEndChange = this._onDateEndChange.bind(this);
     this._setDatepicker(this._datePickerBeginDate, true);
     this._setDatepicker(this._datePickerEndDate);
-    
+
   }
 
   getTemplate() {
@@ -267,7 +267,7 @@ export default class EditForm extends SmartView {
 
   _submitForm(evt) {
     evt.preventDefault();
-    this._callback.editSubmit();
+    this._callback.editSubmit(EditForm.parseStateToData(this._pointState));
   }
 
   setSubmitForm(callback) {
@@ -324,14 +324,19 @@ export default class EditForm extends SmartView {
     return Object.assign(
       {},
       data,
+      {
+        justEdit: false,
+      },
     );
   }
 
   static parseStateToData(state) {
-    return Object.assign(
+    state =  Object.assign(
       {},
       state,
     );
+    delete state.justEdit;
+    return state;
   }
 
   resetInput(data) {

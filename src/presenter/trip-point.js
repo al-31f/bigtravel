@@ -59,6 +59,12 @@ export default class TripPoint {
     this._tripPointEditComponent.setSubmitForm(() => {
       this._replaceEditFormToPoint();
       console.log('submit');
+      this._changeData(
+        Object.assign(
+          {},
+          this._tripPointEditComponent._pointState,
+        ),
+      );
     });
 
     //сменa типа точки путешествия
