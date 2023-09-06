@@ -2,6 +2,7 @@ import TripPointListView from '../view/trip-point-list.js';
 import TripPointView from '../view/trip-point.js';
 import EditFormView from '../view/edit-form.js';
 import { renderElement, RenderPosition, replace, remove} from '../utils/render.js';
+import {UserAction, UpdateType} from '../consts.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -60,6 +61,8 @@ export default class TripPoint {
       this._replaceEditFormToPoint();
       console.log('submit');
       this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
           {},
           this._tripPointEditComponent._pointState,
@@ -124,6 +127,8 @@ export default class TripPoint {
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._pointData,
