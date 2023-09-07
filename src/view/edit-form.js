@@ -4,6 +4,7 @@ import SmartView from './smart.js';
 import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
 import {DESTINATIONS, destinDescripts} from '../mock/point-data.js';
 import {compareTwoDates} from '../utils/trip-point.js';
+import { convertDuration } from '../utils/common.js';
 
 import flatpickr from 'flatpickr';
 
@@ -348,21 +349,24 @@ export default class EditForm extends SmartView {
       this.updateData({
         begin: newSelectedDate[0],
         end: newSelectedDate[0],
+        duration: convertDuration(dayjs(newSelectedDate[0]).diff(dayjs(newSelectedDate[0]), 'minute')),
       });
     }
 
     this.updateData({
       begin: newSelectedDate[0],
+      duration: convertDuration(dayjs(this._pointState.end).diff(dayjs(newSelectedDate[0]), 'minute')),
     });
   }
 
   _onDateEndChange(newSelectedDate) {
     if (!compareTwoDates(this._pointState.begin, newSelectedDate)) {
-      newSelectedDate = this._pointState.begin;
+      newSelectedDate[0] = this._pointState.begin;
     }
 
     this.updateData({
-      end: newSelectedDate,
+      end: newSelectedDate[0],
+      duration: convertDuration(dayjs(newSelectedDate).diff(dayjs(this._pointState.begin), 'minute')),
     });
   }
 }

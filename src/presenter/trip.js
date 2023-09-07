@@ -47,7 +47,6 @@ export default class Trip {
     renderElement(filtersElement, this._tripFiltersComponent, RenderPosition.BEFOREEND);
     renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
-    this._renderSort();
     this._renderBoard();
   }
 
@@ -123,7 +122,7 @@ export default class Trip {
     this._currentSortType = sortType;
     console.log(sortType);
     this._clearBoard({resetRenderedTaskCount: true});
-    this._renderSort();
+    
     this._renderBoard();
     // - Очищаем список
     // - Рендерим список заново
@@ -205,7 +204,7 @@ export default class Trip {
       return;
     }
 
-    
+    this._renderSort();
     // Метод для инициализации (начала работы) модуля,
     // бОльшая часть текущей функции renderBoard в main.js
     renderElement(this._tripMainContainer, this._tripPointListComponent, RenderPosition.BEFOREEND);
