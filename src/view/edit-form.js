@@ -197,6 +197,8 @@ export default class EditForm extends SmartView {
 
     this._submitForm = this._submitForm.bind(this);
 
+    this._deletePointHandler = this._deletePointHandler.bind(this);
+
     this._onPointTypeChange = this._onPointTypeChange.bind(this);
 
     this._onPointDestinationInput = this._onPointDestinationInput.bind(this);
@@ -229,6 +231,16 @@ export default class EditForm extends SmartView {
   setSubmitForm(callback) {
     this._callback.editSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._submitForm);
+  }
+
+  _deletePointHandler(evt) {
+    evt.preventDefault();
+    this._callback.deletePoint(EditForm.parseStateToData(this._pointState));
+  }
+
+  setDeletePoint(callback) {
+    this._callback.deletePoint = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._deletePointHandler);
   }
 
   _onPointTypeChange(evt) {

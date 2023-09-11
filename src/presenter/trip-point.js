@@ -47,6 +47,9 @@ export default class TripPoint {
     //открывает форму редактирования по стрелке
     this._replacePointToEditForm();
 
+    //нажатие на кнопку удалить
+    this._deletePoint(this._pointData);
+
 
 
     //скрывает форму редактирования по стрелке
@@ -112,6 +115,18 @@ export default class TripPoint {
   _replaceEditFormToPoint() {
     replace(this._tripPointComponent, this._tripPointEditComponent);
     this._mode = Mode.DEFAULT;
+  }
+
+  _deletePoint(point) {
+    this._tripPointEditComponent.setDeletePoint(() => {
+      this.destroy();
+      this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point,
+      );
+      console.log('del');
+    });
   }
 
   destroy() {

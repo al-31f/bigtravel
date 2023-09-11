@@ -117,8 +117,6 @@ export default class Trip {
     if (this._currentSortType === sortType) {
       return;
     }
-
-    /////this._sortTasks(sortType);
     this._currentSortType = sortType;
     console.log(sortType);
     this._clearBoard({resetRenderedTaskCount: true});
@@ -129,8 +127,6 @@ export default class Trip {
   }
 
   _renderSort() {
-    // Метод для рендеринга сортировки
-    //
     if (this._tripSortComponent !== null) {
       this._tripSortComponent = null;
     }
@@ -157,13 +153,14 @@ export default class Trip {
     }
   }
 
+  /* вероятно ненужный метод
   _clearPointsList() {
     Object
       .values(this._tripPointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._tripPointPresenter = {};
   }
-
+*/
   _renderNoPolints() {
     console.log('no points');
     // Метод для рендеринга заглушки
