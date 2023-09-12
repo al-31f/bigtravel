@@ -3,18 +3,6 @@ import dayjs from 'dayjs';
 
 const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-export const convertDuration = (duration) => {
-
-  if (duration < 60) {
-    duration = `${duration.toString().padStart(2, '0')}M`;
-  }
-  if (duration >= 60 && duration < 1440) {
-    duration = `${Math.floor(duration/60).toString().padStart(2, '0')}H ${(duration % 60).toString().padStart(2, '0')}M`;
-  }
-  if (duration >1440) {
-    duration = `${Math.floor(duration/1440).toString().padStart(2, '0')}D ${Math.floor((duration % 1440)/60).toString().padStart(2, '0')}H ${(duration % 60).toString().padStart(2, '0')}M`;
-  }
-};
 
 const generateDate = () => {
 
@@ -107,3 +95,4 @@ export const genPointsData = () => {
   }
   return pointsData;
 };
+

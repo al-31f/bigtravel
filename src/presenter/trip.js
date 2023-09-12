@@ -1,5 +1,4 @@
 import SiteMenuView from '../view/menu.js';
-import FiltersView from '../view/filters.js';
 import TripInfoView from '../view/trip-info.js';
 import TripSortView from '../view/trip-sort.js';
 import TripPointListView from '../view/trip-point-list.js';
@@ -8,13 +7,15 @@ import TripPointPresenter from '../presenter/trip-point.js';
 import {sortTaskDown, comparePrice, compareDuration} from '../utils/trip-point.js';
 import {SortType, UpdateType, UserAction} from '../consts.js';
 import {renderElement, RenderPosition, remove} from '../utils/render.js';
+import {filter} from '../utils/filter.js';
 
 const POINTS_NUMBER = 20;
 
 export default class Trip {
-  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel) {
+  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel, filterModel) {
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
+    this._filterModel = filterModel;
     this._tripInfoContainer = tripInfoContainer;
     this._tripMainContainer = tripMainContainer;
     this._renderedPointCount = POINTS_NUMBER;
@@ -24,7 +25,7 @@ export default class Trip {
     this._tripSortComponent = null;
 
     this._tripSiteMenuComponent = new SiteMenuView();
-    this._tripFiltersComponent = new FiltersView();
+    //this._tripFiltersComponent = new FiltersView('past');
     this._tripInfoComponent = new TripInfoView();
     //this._tripSortComponent = new TripSortView(this._currentSortType);
     this._tripPointListComponent = new TripPointListView();
@@ -34,36 +35,42 @@ export default class Trip {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._pointsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
 
     const menuElement = this._tripInfoContainer.querySelector('.trip-controls__navigation');
-    const filtersElement = this._tripInfoContainer.querySelector('.trip-controls__filters');
+    //const filtersElement = this._tripInfoContainer.querySelector('.trip-controls__filters');
     const tripCostElement = this._tripInfoContainer.querySelector('.trip-main__trip-info');
 
     renderElement(menuElement, this._tripSiteMenuComponent, RenderPosition.BEFOREEND);
-    renderElement(filtersElement, this._tripFiltersComponent, RenderPosition.BEFOREEND);
+    //renderElement(filtersElement, this._tripFiltersComponent, RenderPosition.BEFOREEND);
     renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
     this._renderBoard();
   }
 
   _getPoints() {
+
+    const filterType = this._filterModel.getFilter();
+    const points = this._pointsModel.getPoints();
+    const filtredPoints = filter[filterType](points);
+
     switch (this._currentSortType) {
 
       case SortType.DEFAULT:
-        return this._pointsModel.getPoints().slice().sort(sortTaskDown);
+        return filtredPoints.sort(sortTaskDown);
 
       case SortType.PRICE_DOWN:
-        return this._pointsModel.getPoints().slice().sort(comparePrice);
+        return filtredPoints.sort(comparePrice);
 
       case SortType.TIME_DOWN:
-        return this._pointsModel.getPoints().slice().sort(compareDuration);
+        return filtredPoints.sort(compareDuration);
     }
 
-    return this._pointsModel.getPoints();
+    return filtredPoints;
   }
 
   _getOffers() {
@@ -210,7 +217,9 @@ export default class Trip {
     // но и по ходу работы приложения, нужно заменить
     // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
     // чтобы в случае перерисовки сохранить N-показанных карточек
-    this._renderPoints(points.slice(0, Math.min(pointsCount, this._renderedPointCount)));
+    //this._renderPoints(points.slice(0, Math.min(pointsCount, this._renderedPointCount)));
+    //не ренедерит все точки после фильтрации(строка выше)
+    this._renderPoints(points.slice());
 
 
   }

@@ -59,3 +59,21 @@ export const compareTwoDates = (dateBegin, dateEnd) => {
     return false;
   }
 };
+
+export const isPastPoint = (dateBegin) => {
+  if (dayjs().isAfter(dateBegin, 'D') > 0) {
+    return true;
+  }
+  else {
+    return false;
+  }
+};
+
+export const isFuturePoint = (dateEnd) => {
+  if (dayjs().isBefore(dateEnd, 'D') > 0) {
+    return true;
+  }
+  else {
+    return false;
+  }
+};
