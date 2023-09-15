@@ -4,8 +4,9 @@ import TripSortView from '../view/trip-sort.js';
 import TripPointListView from '../view/trip-point-list.js';
 import TripCostView from '../view/trip-cost.js';
 import TripPointPresenter from '../presenter/trip-point.js';
+import TripPointNewPresenter from './trip-point-new.js';
 import {sortTaskDown, comparePrice, compareDuration} from '../utils/trip-point.js';
-import {SortType, UpdateType, UserAction} from '../consts.js';
+import {SortType, UpdateType, UserAction, FilterType} from '../consts.js';
 import {renderElement, RenderPosition, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 
@@ -36,6 +37,7 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+    this._tripPointNewPresenter = new TripPointNewPresenter(this._tripPointListComponent, this._handleViewAction);
   }
 
   init() {
@@ -50,6 +52,12 @@ export default class Trip {
     renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
     this._renderBoard();
+  }
+
+  createPoint() {
+    this._currentSortType = SortType.DEFAULT;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._tripPointNewPresenter.init();
   }
 
   _getPoints() {
@@ -79,6 +87,7 @@ export default class Trip {
 
 
   _handleModeChange() {
+    this._tripPointNewPresenter.destroy();
     Object
       .values(this._tripPointPresenter)
       .forEach((presenter) => presenter.resetView());
@@ -176,6 +185,7 @@ export default class Trip {
   _clearBoard({resetRenderedTaskCount = false, resetSortType = false} = {}) {
     const pointCount = this._getPoints().length;
 
+    this._tripPointNewPresenter.destroy();
     Object
       .values(this._tripPointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -220,6 +230,7 @@ export default class Trip {
     //this._renderPoints(points.slice(0, Math.min(pointsCount, this._renderedPointCount)));
     //не ренедерит все точки после фильтрации(строка выше)
     this._renderPoints(points.slice());
+    console.log(this._getPoints());
 
 
   }

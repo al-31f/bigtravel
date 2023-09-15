@@ -34,5 +34,16 @@ const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsM
 tripPresenter.init();
 filterPresenter.init();
 
+const newPointClickHandle = () => {
+  document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+    evt.preventDefault();
+    console.log('click');
+    tripPresenter.createPoint();
+  });
+};
+
+newPointClickHandle();
+
+
 export {pointsData};
 

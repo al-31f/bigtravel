@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
+
 export const SortType = {
   DEFAULT: 'default',
   TIME_DOWN: 'time-down',
@@ -20,4 +23,18 @@ export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
+};
+
+export const PointDataDefault = {
+  id: nanoid(),
+  type: 'taxi',
+  destination: '',
+  begin: dayjs().toDate(),
+  end: dayjs().toDate(),
+  duration: 0,
+  price: 0,
+  description: '',
+  images: '',
+  favorite: false,
+  offers: [],
 };
