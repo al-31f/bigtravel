@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import he from 'he';
 import AbstractView from './abstract.js';
 
 const renderOffer = (offers, point) => {
@@ -34,7 +35,7 @@ const createTripPointTemplate = (data, specOffersData) => `<li class="trip-event
   <div class="event__type">
     <img class="event__type-icon" width="42" height="42" src="img/icons/${data.type}.png" alt="Event type icon">
   </div>
-  <h3 class="event__title">${data.type} ${data.destination}</h3>
+  <h3 class="event__title">${data.type} ${he.encode(data.destination)}</h3>
   <div class="event__schedule">
     <p class="event__time">
       <time class="event__start-time" datetime="${dayjs(data.begin).format('YYYY-MM-DDTHH:mm')}">${dayjs(data.begin).format('HH:mm')}</time>

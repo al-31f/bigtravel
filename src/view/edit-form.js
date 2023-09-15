@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import he from 'he';
 //import AbstractView from './abstract.js';
 import SmartView from './smart.js';
 import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
@@ -135,7 +136,7 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
       <label class="event__label  event__type-output" for="event-destination-1">
       ${data.type}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${data.destination}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(data.destination)}" list="destination-list-1">
       <datalist id="destination-list-1">
         ${renderDestinationList(DESTINATIONS)}
       </datalist>
