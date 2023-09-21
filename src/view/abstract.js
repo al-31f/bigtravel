@@ -26,4 +26,11 @@ export default class Abstract {
     this._element = null;
   }
 
+  show(hideClass) {
+    this._element.firstChild.parentElement.classList.remove(hideClass);
+  }
+
+  hide(hideClass) {
+    this._element.firstChild.parentElement.classList.add(hideClass);
+  }
 }

@@ -9,6 +9,7 @@ import {sortTaskDown, comparePrice, compareDuration} from '../utils/trip-point.j
 import {SortType, UpdateType, UserAction, FilterType} from '../consts.js';
 import {renderElement, RenderPosition, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
+import TripStatsView from '../view/stats.js';
 
 const POINTS_NUMBER = 20;
 
@@ -26,6 +27,7 @@ export default class Trip {
     this._tripSortComponent = null;
 
     this._tripSiteMenuComponent = new SiteMenuView();
+    this._tripStatsComponent = new TripStatsView();
     //this._tripFiltersComponent = new FiltersView('past');
     this._tripInfoComponent = new TripInfoView();
     //this._tripSortComponent = new TripSortView(this._currentSortType);
@@ -52,6 +54,7 @@ export default class Trip {
     renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
     this._renderBoard();
+    this.changeMenu();
   }
 
   createPoint() {
@@ -169,14 +172,6 @@ export default class Trip {
     }
   }
 
-  /* вероятно ненужный метод
-  _clearPointsList() {
-    Object
-      .values(this._tripPointPresenter)
-      .forEach((presenter) => presenter.destroy());
-    this._tripPointPresenter = {};
-  }
-*/
   _renderNoPolints() {
     console.log('no points');
     // Метод для рендеринга заглушки
@@ -223,15 +218,60 @@ export default class Trip {
     // бОльшая часть текущей функции renderBoard в main.js
     renderElement(this._tripMainContainer, this._tripPointListComponent, RenderPosition.BEFOREEND);
 
-    // Теперь, когда _renderBoard рендерит доску не только на старте,
-    // но и по ходу работы приложения, нужно заменить
-    // константу TASK_COUNT_PER_STEP на свойство _renderedTaskCount,
-    // чтобы в случае перерисовки сохранить N-показанных карточек
     //this._renderPoints(points.slice(0, Math.min(pointsCount, this._renderedPointCount)));
     //не ренедерит все точки после фильтрации(строка выше)
     this._renderPoints(points.slice());
-    console.log(this._getPoints());
 
+    //вывод экрана статистики
+    renderElement(this._tripMainContainer, this._tripStatsComponent, RenderPosition.BEFOREEND);
+    
+    this.showTrip();
+    console.log(this._getPoints());
+  }
+
+  hideTrip() {
+    this._tripPointListComponent.hide('visually-hidden');
+    this._tripStatsComponent.show('visually-hidden');
+  }
+
+  showTrip() {
+    this._tripPointListComponent.show('visually-hidden');
+    this._tripStatsComponent.hide('visually-hidden');
+  }
+
+  changeMenu() {
+    const menuItems = this._tripSiteMenuComponent.getElement().querySelectorAll('a');
+    console.log(menuItems);
+    //let checkedItem = menuItems[0];
+    let prevCheckedItem = menuItems[0];
+
+    menuItems.forEach((item) => {
+      item.addEventListener('click', (evt) => {
+        evt.preventDefault();
+        console.log(item.textContent);
+        if (item.classList.contains('trip-tabs__btn--active')) {
+          console.log('nazhato uzhe');
+        } else {
+          prevCheckedItem.classList.remove('trip-tabs__btn--active');
+          prevCheckedItem = item;
+          item.classList.add('trip-tabs__btn--active');
+          
+          switch (item.textContent) {
+            case 'Table':
+              this.showTrip();
+              this._currentSortType = SortType.DEFAULT;
+              this._clearBoard({resetRenderedPointCount: true, resetSortType: true});
+              this._renderBoard();
+              break;
+            case 'Stats':
+            // - обновить список (например, когда задача ушла в архив)
+              this.hideTrip();
+              remove(this._tripSortComponent);
+              break;
+          }
+        }
+      });
+    });
 
   }
 }

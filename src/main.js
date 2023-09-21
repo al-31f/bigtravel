@@ -7,6 +7,10 @@ import { genSpecOffersData } from './mock/point-spec-offers-data.js';
 import OffersModel from './model/offers.js';
 import FilterModel from './model/filter.js';
 
+import TripStats from './view/stats.js';
+import TripMenu from './view/menu.js';
+import { renderElement, RenderPosition } from './utils/render.js';
+
 
 const tripHeaderElement = document.querySelector('.trip-main');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -41,9 +45,15 @@ const newPointClickHandle = () => {
     tripPresenter.createPoint();
   });
 };
-
 newPointClickHandle();
 
+/*const menu = new TripMenu();
+const stats = new TripStats();
+renderElement(tripEventsElement, stats, RenderPosition.BEFOREEND);
+//console.log(tripEventsElement, menu);
 
+//const menuItems = menu.getElement().querySelectorAll('a');
+//console.log(menu);
+*/
 export {pointsData};
 
