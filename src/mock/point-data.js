@@ -57,8 +57,9 @@ const genDestinDescripts = (dests) => {
 
 export const destinDescripts = genDestinDescripts(DESTINATIONS);
 
+export const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+
 export const genPointData = () => {
-  const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 
   const dates = generateDate();
 

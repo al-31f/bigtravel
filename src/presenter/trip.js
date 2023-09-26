@@ -27,7 +27,7 @@ export default class Trip {
     this._tripSortComponent = null;
 
     this._tripSiteMenuComponent = new SiteMenuView();
-    this._tripStatsComponent = new TripStatsView();
+    this._tripStatsComponent = new TripStatsView(this._pointsModel.getPoints());
     //this._tripFiltersComponent = new FiltersView('past');
     this._tripInfoComponent = new TripInfoView();
     //this._tripSortComponent = new TripSortView(this._currentSortType);
@@ -241,7 +241,7 @@ export default class Trip {
 
   changeMenu() {
     const menuItems = this._tripSiteMenuComponent.getElement().querySelectorAll('a');
-    console.log(menuItems);
+    //console.log(menuItems);
     //let checkedItem = menuItems[0];
     let prevCheckedItem = menuItems[0];
 
