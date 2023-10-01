@@ -3,6 +3,8 @@ import TripInfoView from '../view/trip-info.js';
 import TripSortView from '../view/trip-sort.js';
 import TripPointListView from '../view/trip-point-list.js';
 import TripCostView from '../view/trip-cost.js';
+import LoadingView from '../view/loading.js';
+
 import TripPointPresenter from '../presenter/trip-point.js';
 import TripPointNewPresenter from './trip-point-new.js';
 import {sortTaskDown, comparePrice, compareDuration} from '../utils/trip-point.js';
@@ -23,6 +25,7 @@ export default class Trip {
     this._renderedPointCount = POINTS_NUMBER;
     this._tripPointPresenter = {};
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
 
     this._tripSortComponent = null;
 
@@ -32,6 +35,7 @@ export default class Trip {
     this._tripInfoComponent = new TripInfoView();
     //this._tripSortComponent = new TripSortView(this._currentSortType);
     this._tripPointListComponent = new TripPointListView();
+    this._loadingComponent = new LoadingView();
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -128,6 +132,12 @@ export default class Trip {
         this._clearBoard({resetRenderedPointCount: true, resetSortType: true});
         this._renderBoard();
         break;
+
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
+        this._renderBoard();
+        break;
     }
   }
 
@@ -172,6 +182,10 @@ export default class Trip {
     }
   }
 
+  _renderLoading() {
+    renderElement(this._tripMainContainer, this._loadingComponent, RenderPosition.AFTERBEGIN);
+  }
+
   _renderNoPolints() {
     console.log('no points');
     // Метод для рендеринга заглушки
@@ -205,6 +219,12 @@ export default class Trip {
   }
 
   _renderBoard() {
+    
+    if (this._isLoading) {
+      this._renderLoading();
+      return;
+    }
+
     const points = this._getPoints();
     const pointsCount = points.length;
 

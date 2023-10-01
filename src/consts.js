@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
+export const MILLISEC_IN_MINUTE = 60000;
+
 export const SortType = {
   DEFAULT: 'default',
   TIME_DOWN: 'time-down',
@@ -17,6 +19,7 @@ export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
 };
 
 export const FilterType = {

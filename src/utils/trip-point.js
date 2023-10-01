@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-
+import { MILLISEC_IN_MINUTE } from '../consts';
 
 // Функция помещает задачи без даты в конце списка,
 // возвращая нужный вес для колбэка sort
@@ -79,7 +79,9 @@ export const isFuturePoint = (dateEnd) => {
 };
 
 
-export const formatDuration = (duration) => {
+export const formatDuration = (start, end) => {
+  let duration = (end - start) / MILLISEC_IN_MINUTE;
+  console.log(end);
   if (duration < 60) {
     duration = `${duration.toString().padStart(2, '0')}M`;
   }

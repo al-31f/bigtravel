@@ -6,11 +6,12 @@ export default class Points extends Observer {
   constructor() {
     super();
     this._points = [];
-    this._offers = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -83,7 +84,7 @@ export default class Points extends Observer {
         description: point.destination.description,
         images: point.destination.pictures,
         destination: point.destination.name,
-        duration: formatDuration(point.date_to - point.date_from),
+        duration: formatDuration(new Date(point.date_from.replace(/\:\d{2}\.\d+Z$/, '')) , new Date(point.date_to.replace(/\:\d{2}\.\d+Z$/, ''))),
         favorite: point.is_favorite,
         price: point.base_price,
         offers: offersIds,
