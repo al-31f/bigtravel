@@ -248,13 +248,13 @@ export default class SiteMenu extends AbstractView {
     const moneyCtx = this.getElement().querySelector('#money');
     const typeCtx = this.getElement().querySelector('#type');
     const timeCtx = this.getElement().querySelector('#time-spend');
-    
+
     // Рассчитаем высоту канваса в зависимости от того, сколько данных в него будет передаваться
-    console.log(this.getElement());
+    //console.log(this.getElement());
     const BAR_HEIGHT = 55;
-    moneyCtx.height = BAR_HEIGHT * 5;
-    typeCtx.height = BAR_HEIGHT * 5;
-    timeCtx.height = BAR_HEIGHT * 5;
+    moneyCtx.height = BAR_HEIGHT * 10;
+    typeCtx.height = BAR_HEIGHT * 10;
+    timeCtx.height = BAR_HEIGHT * 10;
 
     this.moneyChart = renderMoneyChart(moneyCtx, this._points);
     this.typeChart = renderTypeChart(typeCtx, this._points);

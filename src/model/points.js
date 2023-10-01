@@ -1,5 +1,7 @@
 import Observer from '../utils/observer.js';
 
+import { formatDuration } from '../utils/trip-point.js';
+
 export default class Points extends Observer {
   constructor() {
     super();
@@ -69,26 +71,22 @@ export default class Points extends Observer {
           id: point.id.toString() + (index*101).toString(),
         },
       ));
-        offersIds.push(point.id.toString() + (index*101).toString());
+
+      offersIds.push(point.id.toString() + (index*101).toString());
     });
     const adaptedPoint = Object.assign(
       {},
       point,
       {
-        begin: point.date_from,
-        end: point.date_to,
+        begin: new Date(point.date_from),
+        end: new Date(point.date_to),
         description: point.destination.description,
         images: point.destination.pictures,
         destination: point.destination.name,
-        duration: '', //посчитать
+        duration: formatDuration(point.date_to - point.date_from),
         favorite: point.is_favorite,
         price: point.base_price,
         offers: offersIds,
-
-        //dueDate: point.due_date !== null ? new Date(point.due_date) : point.due_date, // На клиенте дата хранится как экземпляр Date
-        //isArchive: point.is_archived,
-        //isFavorite: point.is_favorite,
-        //repeating: point.repeating_days,
       },
     );
 
@@ -97,14 +95,6 @@ export default class Points extends Observer {
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
     delete adaptedPoint.base_price;
-    //delete adaptedPoint.destination.description;
-    //delete adaptedPoint.destination.name;
-
-
-    //delete adaptedPoint.due_date;
-    //delete adaptedPoint.is_archived;
-    //delete adaptedPoint.is_favorite;
-    //delete adaptedPoint.repeating_days;
 
     return adaptedPoint;
   }
@@ -114,18 +104,27 @@ export default class Points extends Observer {
       {},
       point,
       {
-        'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
-        'is_archived': point.isArchive,
-        'is_favorite': point.isFavorite,
-        'repeating_days': point.repeating,
+        'date_from': point.begin.toISOString(),
+        'date_to': point.end.toISOString(),
+        'is_favorite': point.favorite,
+        'base_price': point.price,
+        destination: {
+          name: point.destination,
+          description: point.description,
+          pictures: point.images,
+        },
+      //  offers: дописать !!!
       },
     );
 
     // Ненужные ключи мы удаляем
-    delete adaptedPoint.dueDate;
-    delete adaptedPoint.isArchive;
-    delete adaptedPoint.isFavorite;
-    delete adaptedPoint.repeating;
+    delete adaptedPoint.begin;
+    delete adaptedPoint.end;
+    delete adaptedPoint.duration;
+    delete adaptedPoint.favorite;
+    delete adaptedPoint.price;
+    delete adaptedPoint.description;
+    delete adaptedPoint.images;
 
     return adaptedPoint;
   }

@@ -11,7 +11,7 @@ export const formatDuration = (duration) => {
     duration = `${Math.floor(duration/1440).toString().padStart(2, '0')}D ${Math.floor((duration % 1440)/60).toString().padStart(2, '0')}H ${(duration % 60).toString().padStart(2, '0')}M`;
   }
   return duration;
-}
+};
 
 export const getTypePrices = (points, types) => {
 
@@ -27,7 +27,7 @@ export const getTypePrices = (points, types) => {
 
   points.forEach((point) => {
     const duration = (point.end - point.begin) / MILLISEC_IN_MINUTE;
-    
+
     pricesPerType[typesToLowrerCase.indexOf(point.type)] = pricesPerType[typesToLowrerCase.indexOf(point.type)] + point.price;
     typeCount[typesToLowrerCase.indexOf(point.type)] = typeCount[typesToLowrerCase.indexOf(point.type)] + 1;
     durationPerType[typesToLowrerCase.indexOf(point.type)] = durationPerType[typesToLowrerCase.indexOf(point.type)] + duration;
@@ -36,7 +36,7 @@ export const getTypePrices = (points, types) => {
 
   const formattedDuration = new Array(types.length).fill(0);
   durationPerType.forEach((duration, i) => {
-    
+
     if (duration < 60) {
       duration = `${duration.toString().padStart(2, '0')}M`;
     }
@@ -47,10 +47,10 @@ export const getTypePrices = (points, types) => {
       duration = `${Math.floor(duration/1440).toString().padStart(2, '0')}D ${Math.floor((duration % 1440)/60).toString().padStart(2, '0')}H ${(duration % 60).toString().padStart(2, '0')}M`;
     }
     formattedDuration[i] = duration;
-    
+
   });
 
-  console.log(formattedDuration);
+//  console.log(formattedDuration);
   const stats = {
     price: pricesPerType,
     type: typeCount,
@@ -58,6 +58,6 @@ export const getTypePrices = (points, types) => {
     timeFormatted: formattedDuration,
   };
 
-  console.log(stats);
+//  console.log(stats);
   return stats;
 };

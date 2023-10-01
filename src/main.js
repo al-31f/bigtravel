@@ -31,26 +31,23 @@ pointsModel.setPoints(pointsData);
 
 const offersModel = new OffersModel();
 offersModel.setOffers(specOffersData);
-console.log(pointsModel);
-console.log(offersModel);
+//console.log(pointsModel);
+//console.log(offersModel);
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
+//вывод для наглядности. удалить потом
+api.getServerPoints();
+
 api.getPoints().then((points) => {
-  console.log('points from server:', points);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
-});
+  console.log('adopted points from server:', points[0]);
+  return points;
+}).then((points) => console.log(points.map(PointsModel.adaptToServer)[0]));
 
 api.getOffers().then((offers) => {
-  console.log('offers from server:', offers);
-  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
-  // а ещё на сервере используется snake_case, а у нас camelCase.
-  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
-  // Есть вариант получше - паттерн "Адаптер"
+  //console.log('adopted offers from server:', offers);
 });
+
 
 const filterModel = new FilterModel();
 //создает и инициализирует экземпляр презентера

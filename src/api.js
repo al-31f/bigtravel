@@ -17,6 +17,15 @@ export default class Api {
     this._authorization = authorization;
   }
 
+
+  //удалить после адаптирования
+  getServerPoints() {
+    return this._load({url: 'points'})
+      .then(Api.toJSON)
+      .then((points) => console.log('point from server:',points[0]));
+  }
+
+
   getPoints() {
     return this._load({url: 'points'})
       .then(Api.toJSON)
