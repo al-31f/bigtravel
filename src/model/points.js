@@ -4,6 +4,7 @@ export default class Points extends Observer {
   constructor() {
     super();
     this._points = [];
+    this._offers = [];
   }
 
   setPoints(points) {
@@ -53,4 +54,80 @@ export default class Points extends Observer {
 
     this._notify(updateType);
   }
+
+
+  static adaptToClient(point) {
+    const adoptedPointOffers = [];
+    const offersIds = [];
+
+    point.offers.forEach((offer, index) => {
+      adoptedPointOffers.push(Object.assign(
+        {},
+        offer,
+        {
+          type: point.type,
+          id: point.id.toString() + (index*101).toString(),
+        },
+      ));
+        offersIds.push(point.id.toString() + (index*101).toString());
+    });
+    const adaptedPoint = Object.assign(
+      {},
+      point,
+      {
+        begin: point.date_from,
+        end: point.date_to,
+        description: point.destination.description,
+        images: point.destination.pictures,
+        destination: point.destination.name,
+        duration: '', //посчитать
+        favorite: point.is_favorite,
+        price: point.base_price,
+        offers: offersIds,
+
+        //dueDate: point.due_date !== null ? new Date(point.due_date) : point.due_date, // На клиенте дата хранится как экземпляр Date
+        //isArchive: point.is_archived,
+        //isFavorite: point.is_favorite,
+        //repeating: point.repeating_days,
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedPoint.date_from;
+    delete adaptedPoint.date_to;
+    delete adaptedPoint.is_favorite;
+    delete adaptedPoint.base_price;
+    //delete adaptedPoint.destination.description;
+    //delete adaptedPoint.destination.name;
+
+
+    //delete adaptedPoint.due_date;
+    //delete adaptedPoint.is_archived;
+    //delete adaptedPoint.is_favorite;
+    //delete adaptedPoint.repeating_days;
+
+    return adaptedPoint;
+  }
+
+  static adaptToServer(point) {
+    const adaptedPoint = Object.assign(
+      {},
+      point,
+      {
+        'due_date': point.dueDate instanceof Date ? point.dueDate.toISOString() : null, // На сервере дата хранится в ISO формате
+        'is_archived': point.isArchive,
+        'is_favorite': point.isFavorite,
+        'repeating_days': point.repeating,
+      },
+    );
+
+    // Ненужные ключи мы удаляем
+    delete adaptedPoint.dueDate;
+    delete adaptedPoint.isArchive;
+    delete adaptedPoint.isFavorite;
+    delete adaptedPoint.repeating;
+
+    return adaptedPoint;
+  }
+
 }

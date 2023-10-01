@@ -7,10 +7,14 @@ import { genSpecOffersData } from './mock/point-spec-offers-data.js';
 import OffersModel from './model/offers.js';
 import FilterModel from './model/filter.js';
 
+import Api from './api.js';
+
 import TripStats from './view/stats.js';
 import TripMenu from './view/menu.js';
 import { renderElement, RenderPosition } from './utils/render.js';
 
+const AUTHORIZATION = 'Basic hsS2ssd3dsfsSwcssls1sa2j';
+const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
 
 const tripHeaderElement = document.querySelector('.trip-main');
 const tripEventsElement = document.querySelector('.trip-events');
@@ -30,6 +34,23 @@ offersModel.setOffers(specOffersData);
 console.log(pointsModel);
 console.log(offersModel);
 
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log('points from server:', points);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+});
+
+api.getOffers().then((offers) => {
+  console.log('offers from server:', offers);
+  // Есть проблема: cтруктура объекта похожа, но некоторые ключи называются иначе,
+  // а ещё на сервере используется snake_case, а у нас camelCase.
+  // Можно, конечно, переписать часть нашего клиентского приложения, но зачем?
+  // Есть вариант получше - паттерн "Адаптер"
+});
 
 const filterModel = new FilterModel();
 //создает и инициализирует экземпляр презентера
