@@ -84,7 +84,7 @@ export default class Points extends Observer {
         description: point.destination.description,
         images: point.destination.pictures,
         destination: point.destination.name,
-        duration: formatDuration(new Date(point.date_from.replace(/\:\d{2}\.\d+Z$/, '')) , new Date(point.date_to.replace(/\:\d{2}\.\d+Z$/, ''))),
+        duration: formatDuration(new Date(point.date_from.replace(/:\d{2}\.\d+Z$/, '')) , new Date(point.date_to.replace(/:\d{2}\.\d+Z$/, ''))),
         favorite: point.is_favorite,
         price: point.base_price,
         offers: offersIds,

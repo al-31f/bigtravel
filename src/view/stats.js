@@ -1,11 +1,12 @@
 import AbstractView from './abstract.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {POINT_TYPES} from '../mock/point-data.js';
+import {POINT_TYPES} from '../consts.js';
 import { getTypePrices, formatDuration } from '../utils/stats.js';
 
 
-const renderMoneyChart = (moneyCtx, points) => {
+const renderMoneyChart = (moneyCtx, points, offersIndexModel) => {
+  console.log(points);
   getTypePrices(points, POINT_TYPES);
   const moneyChart = new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -76,7 +77,7 @@ const renderMoneyChart = (moneyCtx, points) => {
 };
 
 
-const renderTypeChart = (typeCtx, points) => {
+const renderTypeChart = (typeCtx, points, offersIndexModel) => {
   const typeChart = new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -146,8 +147,7 @@ const renderTypeChart = (typeCtx, points) => {
 };
 
 
-
-const renderTimeChart = (timeCtx, points) => {
+const renderTimeChart = (timeCtx, points, offersIndexModel) => {
   const timeChart = new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -231,9 +231,10 @@ const createStatsTemplate = () => `<section class="statistics">
 <section>`;
 
 export default class SiteMenu extends AbstractView {
-  constructor(points) {
+  constructor(points, offersIndexModel) {
     super();
     this._points = points;
+    this._offersIndexModel = offersIndexModel;
     this.moneyChart = null;
     this.typeChart = null;
     this.timeChart = null;
@@ -256,8 +257,8 @@ export default class SiteMenu extends AbstractView {
     typeCtx.height = BAR_HEIGHT * 10;
     timeCtx.height = BAR_HEIGHT * 10;
 
-    this.moneyChart = renderMoneyChart(moneyCtx, this._points);
-    this.typeChart = renderTypeChart(typeCtx, this._points);
-    this.timeChart = renderTimeChart(timeCtx, this._points);
+    this.moneyChart = renderMoneyChart(moneyCtx, this._points, this._offersIndexModel);
+    this.typeChart = renderTypeChart(typeCtx, this._points, this._offersIndexModel);
+    this.timeChart = renderTimeChart(timeCtx, this._points, this._offersIndexModel);
   }
 }

@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
 const calculateTripCost = (data, features) => {
-
+console.log(data, features);
   let tripCost = 0;
   for (let i = 0; i < data.length; i++) {
     tripCost = tripCost + data[i].price;

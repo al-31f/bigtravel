@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import he from 'he';
 //import AbstractView from './abstract.js';
 import SmartView from './smart.js';
-import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
-import {DESTINATIONS, destinDescripts} from '../mock/point-data.js';
+//import {OFFER_TITLES, REAL_OFFER_PRICES} from '../mock/point-spec-offers-data.js';
+//import {DESTINATIONS, destinDescripts} from '../mock/point-data.js';
 import {compareTwoDates} from '../utils/trip-point.js';
 import { convertDuration } from '../utils/common.js';
 
@@ -12,17 +12,52 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const renderDestinationList = (destinations) => {
-  //console.log(destinations);
   let destinationList ='';
   destinations.forEach((destination) => {
-    const destinationElement = `<option value="${destination}"></option>`;
+    const destinationElement = `<option value="${destination.name}"></option>`;
     destinationList = destinationList + destinationElement;
   });
   return destinationList;
 };
 
+const renderOffers = (data, offersData, offersIndexModel) => {
+  let offers = '';
+  const offersList = offersIndexModel.getOffersDescriptions();
+  if (offersList[data.type] !== undefined) {
 
-const renderOffers = (data, offersData) => {
+    let isChecked = '';
+    for (let i = 0; i < offersList[data.type].length; i++) {
+      const isCheckedArray = new Array(offersList[data.type].length);
+      for (let j = 0; j < data.offers.length; j++) {
+        if (offersList[data.type][i].title === offersData.filter((offerData) => offerData.id.toString() === data.offers[j].toString())[0].title) {
+        // если название оффера равно названию оффера, айди которого есть в массиве data.offers
+          isChecked = 'checked';
+          isCheckedArray[i] = isChecked;
+        }
+      }
+
+      const offer = `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isCheckedArray[i]}>
+      <label class="event__offer-label" for="event-offer-${data.type}-${i}">
+        <span class="event__offer-title">${offersList[data.type][i].title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offersList[data.type][i].price}</span>
+      </label>
+    </div>`;
+
+      offers = offers + offer;
+    }
+  }
+  //console.log(data.type);
+  if (data.offers.length > 0) {
+    //console.log('data', data.offers);
+  }
+
+  return offers;
+};
+
+
+/*const renderOffers = (data, offersData) => {
   let offers = '';
   if (OFFER_TITLES[data.type] !== undefined) {
 
@@ -35,14 +70,7 @@ const renderOffers = (data, offersData) => {
           isChecked = 'checked';
           isCheckedArray[i] = isChecked;
         }
-        //else {
-        //  isChecked = '';
-        //  isCheckedArray[i] = isChecked;
-        //}
-        //console.log(isCheckedArray, 'i=', i,'j=' , j);
       }
-
-      //console.log(OFFER_TITLES[data.type][i], isChecked);
 
       const offer = `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isCheckedArray[i]}>
@@ -63,9 +91,9 @@ const renderOffers = (data, offersData) => {
 
   return offers;
 };
+*/
 
-
-const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__item">
+const creatEeditFormTemplate = (data, offersData, destinationsModel, offersIndexModel) => `<li class="trip-events__item">
 <form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
@@ -138,7 +166,8 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(data.destination)}" list="destination-list-1">
       <datalist id="destination-list-1">
-        ${renderDestinationList(DESTINATIONS)}
+        
+        ${renderDestinationList(destinationsModel.getDestinations())}
       </datalist>
     </div>
 
@@ -169,7 +198,7 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
       <div class="event__available-offers">
-      ${renderOffers(data, offersData)}
+      ${renderOffers(data, offersData, offersIndexModel)}
       
 
       </div>
@@ -185,9 +214,11 @@ const creatEeditFormTemplate = (data, offersData) => `<li class="trip-events__it
 
 
 export default class EditForm extends SmartView {
-  constructor(data, offersData) {
+  constructor(data, offersData, destinationsModel, offersIndexModel) {
     super();
     //this._data = data;
+    this._destinationsModel = destinationsModel;
+    this._offersIndexModel = offersIndexModel;
     this._pointState = EditForm.parseDataToState(data);
     this._offersData = offersData;
     this._datePickerBeginDate = null;
@@ -211,7 +242,7 @@ export default class EditForm extends SmartView {
   }
 
   getTemplate() {
-    return creatEeditFormTemplate(this._pointState, this._offersData);
+    return creatEeditFormTemplate(this._pointState, this._offersData, this._destinationsModel, this._offersIndexModel);
   }
 
   _editClickHandler(evt) {
@@ -267,7 +298,7 @@ export default class EditForm extends SmartView {
 
     });
 
-    if (!DESTINATIONS.includes(evt.target.value)) {
+    if (!this._destinationsModel.getDestinationsList().includes(evt.target.value)) {
       return this.updateData({
         destination: evt.target.value,
         description: '',
@@ -277,7 +308,8 @@ export default class EditForm extends SmartView {
     evt.preventDefault();
     this.updateData({
       destination: evt.target.value,
-      description: destinDescripts[evt.target.value],
+      description: this._destinationsModel.getDestinationsDescriptions()[evt.target.value],
+      //description: destinDescripts[evt.target.value],
       justEdit: false,
     });
 
@@ -307,7 +339,7 @@ export default class EditForm extends SmartView {
     delete state.justEdit;
 
     return state;
-    
+
   }
 
   resetInput(data) {

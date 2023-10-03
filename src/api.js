@@ -15,17 +15,37 @@ export default class Api {
   constructor(endPoint, authorization) {
     this._endPoint = endPoint;
     this._authorization = authorization;
+    this._pointsData = [];
+    this._pointsData = this.getPointsData();
   }
 
 
   //удалить после адаптирования
-  getServerPoints() {
+  getPointsData() {
     return this._load({url: 'points'})
-      .then(Api.toJSON)
-      .then((points) => console.log('point from server:',points[0]));
+      .then(Api.toJSON);
   }
 
+  getPoints() {
+    return this._pointsData
+      .then((points) => points.map(PointsModel.adaptToClient));
+  }
 
+  getOffers() {
+    return this._pointsData
+      .then(OffersModel.adaptToClient);
+  }
+
+  getDestinations() {
+    return this._load({url: 'destinations'})
+      .then(Api.toJSON);
+  }
+
+  getOffersIndex() {
+    return this._load({url: 'offers'})
+      .then(Api.toJSON);
+  }
+  /*
   getPoints() {
     return this._load({url: 'points'})
       .then(Api.toJSON)
@@ -37,6 +57,8 @@ export default class Api {
       .then(Api.toJSON)
       .then(OffersModel.adaptToClient);
   }
+
+  */
 
   updatePoint(point) {
     return this._load({

@@ -1,19 +1,19 @@
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
+//import { genSpecOffersData } from './mock/point-spec-offers-data.js';
+//import { genPointsData } from './mock/point-data.js';
 
-import { genPointsData } from './mock/point-data.js';
 import PointsModel from './model/points.js';
-import { genSpecOffersData } from './mock/point-spec-offers-data.js';
 import OffersModel from './model/offers.js';
+import DestinationsIndexModel from './model/destinations.js';
+import OffersIndexModel from './model/offers-index.js';
+
 import FilterModel from './model/filter.js';
 
 import { UpdateType } from './consts.js';
 
 import Api from './api.js';
 
-import TripStats from './view/stats.js';
-import TripMenu from './view/menu.js';
-import { renderElement, RenderPosition } from './utils/render.js';
 
 const AUTHORIZATION = 'Basic hsS2ssd3dsfsSwcssls1sa2j';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -23,43 +23,19 @@ const tripEventsElement = document.querySelector('.trip-events');
 const filtersElement = document.querySelector('.trip-controls__filters');
 
 //генерируем данные
-const pointsData = genPointsData();
-const specOffersData = genSpecOffersData();
-//console.log(pointsData);
-//console.log(specOffersData);
+//const pointsData = genPointsData();
+//const specOffersData = genSpecOffersData();
 
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
-api.getPoints().then((points) => {
-  pointsModel.setPoints(UpdateType.INIT, points);
-}).catch(() => {
-  pointsModel.setPoints(UpdateType.INIT, []);
-});
-console.log('model:' , pointsModel);
-
-//Данные из моков(удалить)
-//pointsModel.setPoints(pointsData);
-
-
 const offersModel = new OffersModel();
-
-api.getOffers().then((offers) => offersModel.setOffers(offers));
-console.log('model:', offersModel);
-
-
-//offersModel.setOffers(specOffersData);
-//console.log('model:', offersModel);
-//console.log(pointsModel);
-//console.log(offersModel);
-
-
-//вывод для наглядности. удалить потом
-//api.getServerPoints();
-
 const filterModel = new FilterModel();
+const destinationsModel = new DestinationsIndexModel();
+const offersIndexModel = new OffersIndexModel();
+
 //создает и инициализирует экземпляр презентера
-const tripPresenter = new TripPresenter(tripHeaderElement, tripEventsElement, pointsModel, offersModel, filterModel);
+const tripPresenter = new TripPresenter(tripHeaderElement, tripEventsElement, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 tripPresenter.init();
 filterPresenter.init();
@@ -73,5 +49,20 @@ const newPointClickHandle = () => {
 };
 newPointClickHandle();
 
-export {pointsData};
+api.getOffers().then((offers) => offersModel.setOffers(UpdateType.INIT, offers)).catch(() => {
+  offersModel.setOffers(UpdateType.INIT, []);
+});
 
+api.getPoints().then((points) => {
+  pointsModel.setPoints(UpdateType.INIT, points);
+}).catch(() => {
+  pointsModel.setPoints(UpdateType.INIT, []);
+});
+
+api.getOffersIndex().then((offersIndex) => {
+  offersIndexModel.setOffers(UpdateType.INIT, offersIndex);
+});
+
+api.getDestinations().then((destinations) => {
+  destinationsModel.setDestinations(UpdateType.INIT, destinations);
+});

@@ -16,10 +16,13 @@ import TripStatsView from '../view/stats.js';
 const POINTS_NUMBER = 20;
 
 export default class Trip {
-  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel, filterModel) {
+  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel) {
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._filterModel = filterModel;
+    this._destinationsModel = destinationsModel;
+    this._offersIndexModel = offersIndexModel;
+
     this._tripInfoContainer = tripInfoContainer;
     this._tripMainContainer = tripMainContainer;
     this._renderedPointCount = POINTS_NUMBER;
@@ -28,9 +31,10 @@ export default class Trip {
     this._isLoading = true;
 
     this._tripSortComponent = null;
+    this._tripCostComponent = null;
 
     this._tripSiteMenuComponent = new SiteMenuView();
-    this._tripStatsComponent = new TripStatsView(this._pointsModel.getPoints());
+    this._tripStatsComponent = new TripStatsView(this._pointsModel.getPoints(), this._offersIndexModel);
     //this._tripFiltersComponent = new FiltersView('past');
     this._tripInfoComponent = new TripInfoView();
     //this._tripSortComponent = new TripSortView(this._currentSortType);
@@ -51,11 +55,12 @@ export default class Trip {
 
     const menuElement = this._tripInfoContainer.querySelector('.trip-controls__navigation');
     //const filtersElement = this._tripInfoContainer.querySelector('.trip-controls__filters');
-    const tripCostElement = this._tripInfoContainer.querySelector('.trip-main__trip-info');
+    //const tripCostElement = this._tripInfoContainer.querySelector('.trip-main__trip-info');
 
     renderElement(menuElement, this._tripSiteMenuComponent, RenderPosition.BEFOREEND);
     //renderElement(filtersElement, this._tripFiltersComponent, RenderPosition.BEFOREEND);
-    renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
+    //console.log(this._pointsModel);
+    //renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
     this._renderBoard();
     this.changeMenu();
@@ -149,7 +154,7 @@ export default class Trip {
     this._currentSortType = sortType;
     console.log(sortType);
     this._clearBoard({resetRenderedTaskCount: true});
-    
+
     this._renderBoard();
     // - Очищаем список
     // - Рендерим список заново
@@ -170,7 +175,7 @@ export default class Trip {
   _renderPoint(pointData, specOfferData) {
     //отрисовка одной точки
     // const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleTripPointChange, this._handleModeChange);
-    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleViewAction, this._handleModeChange);
+    const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersIndexModel);
     tripPointPresenter.init(pointData, specOfferData);
     this._tripPointPresenter[pointData.id] = tripPointPresenter;
   }
@@ -201,6 +206,7 @@ export default class Trip {
     this._taskPresenter = {};
 
     remove(this._tripSortComponent);
+    remove(this._tripCostComponent);
     //remove(this._noTaskComponent);
 
 
@@ -219,7 +225,7 @@ export default class Trip {
   }
 
   _renderBoard() {
-    
+
     if (this._isLoading) {
       this._renderLoading();
       return;
@@ -233,6 +239,10 @@ export default class Trip {
       return;
     }
 
+    const tripCostElement = this._tripInfoContainer.querySelector('.trip-main__trip-info');
+    this._tripCostComponent = new TripCostView(this._getPoints(), this._getOffers());
+    renderElement(tripCostElement, this._tripCostComponent, RenderPosition.BEFOREEND);
+
     this._renderSort();
     // Метод для инициализации (начала работы) модуля,
     // бОльшая часть текущей функции renderBoard в main.js
@@ -244,9 +254,9 @@ export default class Trip {
 
     //вывод экрана статистики
     renderElement(this._tripMainContainer, this._tripStatsComponent, RenderPosition.BEFOREEND);
-    
+
     this.showTrip();
-    console.log(this._getPoints());
+    //console.log(this._getPoints());
   }
 
   hideTrip() {
@@ -275,7 +285,7 @@ export default class Trip {
           prevCheckedItem.classList.remove('trip-tabs__btn--active');
           prevCheckedItem = item;
           item.classList.add('trip-tabs__btn--active');
-          
+
           switch (item.textContent) {
             case 'Table':
               this.showTrip();

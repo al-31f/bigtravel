@@ -3,6 +3,9 @@ import {nanoid} from 'nanoid';
 
 export const MILLISEC_IN_MINUTE = 60000;
 
+export const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+
+
 export const SortType = {
   DEFAULT: 'default',
   TIME_DOWN: 'time-down',

@@ -10,10 +10,12 @@ const Mode = {
 };
 
 export default class TripPoint {
-  constructor(tripMainContainer, changeData, changeMode) {
+  constructor(tripMainContainer, changeData, changeMode, destinationsModel, offersIndexModel) {
     this._tripMainContainer = tripMainContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._destinationsModel = destinationsModel;
+    this._offersIndexModel = offersIndexModel;
 
     this._tripPointComponent = null;
     this._tripPointEditComponent = null;
@@ -25,7 +27,7 @@ export default class TripPoint {
 
   init(pointData, specOfferData) {
     this._pointData = pointData;
-    this.specOfferData = specOfferData;
+    this._specOfferData = specOfferData;
     this._mode = Mode.DEFAULT;
 
     this._renderPoint();
@@ -36,8 +38,8 @@ export default class TripPoint {
     const prevTripPointComponent = this._tripPointComponent;
     const prevTripPointEditComponent = this._tripPointEditComponent;
     // текущая функция renderTask в main.js
-    this._tripPointComponent = new TripPointView(this._pointData, this.specOfferData);
-    this._tripPointEditComponent = new EditFormView(this._pointData, this.specOfferData);
+    this._tripPointComponent = new TripPointView(this._pointData, this._specOfferData);
+    this._tripPointEditComponent = new EditFormView(this._pointData, this._specOfferData, this._destinationsModel, this._offersIndexModel);
 
     const tripPointListElement = this._tripMainContainer.querySelector('.trip-events__list');
 
