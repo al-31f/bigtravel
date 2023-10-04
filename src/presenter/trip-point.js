@@ -53,7 +53,6 @@ export default class TripPoint {
     this._deletePoint(this._pointData);
 
 
-
     //скрывает форму редактирования по стрелке
     this._tripPointEditComponent.setEditClickHandler(() => {
       this._tripPointEditComponent.resetInput(this._pointData);

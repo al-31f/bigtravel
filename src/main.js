@@ -1,7 +1,5 @@
 import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
-//import { genSpecOffersData } from './mock/point-spec-offers-data.js';
-//import { genPointsData } from './mock/point-data.js';
 
 import PointsModel from './model/points.js';
 import OffersModel from './model/offers.js';
@@ -47,7 +45,7 @@ const newPointClickHandle = () => {
     tripPresenter.createPoint();
   });
 };
-newPointClickHandle();
+
 
 api.getOffers().then((offers) => offersModel.setOffers(UpdateType.INIT, offers)).catch(() => {
   offersModel.setOffers(UpdateType.INIT, []);
@@ -65,4 +63,6 @@ api.getOffersIndex().then((offersIndex) => {
 
 api.getDestinations().then((destinations) => {
   destinationsModel.setDestinations(UpdateType.INIT, destinations);
+  newPointClickHandle();
 });
+

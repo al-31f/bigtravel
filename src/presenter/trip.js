@@ -45,22 +45,20 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._pointsModel.addObserver(this._handleModelEvent);
+    //this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-    this._tripPointNewPresenter = new TripPointNewPresenter(this._tripPointListComponent, this._handleViewAction);
+    //this._offersIndexModel.addObserver(this._handleModelEvent);
+    this._destinationsModel.addObserver(this._handleModelEvent);
+
+    this._tripPointNewPresenter = new TripPointNewPresenter(this._tripPointListComponent, this._handleViewAction, this._destinationsModel, this._offersIndexModel);
   }
 
   init() {
     renderElement(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
 
     const menuElement = this._tripInfoContainer.querySelector('.trip-controls__navigation');
-    //const filtersElement = this._tripInfoContainer.querySelector('.trip-controls__filters');
-    //const tripCostElement = this._tripInfoContainer.querySelector('.trip-main__trip-info');
 
     renderElement(menuElement, this._tripSiteMenuComponent, RenderPosition.BEFOREEND);
-    //renderElement(filtersElement, this._tripFiltersComponent, RenderPosition.BEFOREEND);
-    //console.log(this._pointsModel);
-    //renderElement(tripCostElement, new TripCostView(this._getPoints(), this._getOffers()), RenderPosition.BEFOREEND);
 
     this._renderBoard();
     this.changeMenu();
@@ -120,7 +118,7 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data, specOfferData) {
-    //console.log(updateType, data, specOfferData);
+    console.log(updateType, data, specOfferData);
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
@@ -137,7 +135,6 @@ export default class Trip {
         this._clearBoard({resetRenderedPointCount: true, resetSortType: true});
         this._renderBoard();
         break;
-
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);

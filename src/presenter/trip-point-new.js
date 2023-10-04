@@ -1,13 +1,14 @@
-import {nanoid} from 'nanoid';
 import EditFormView from '../view/edit-form.js';
-import { renderElement, RenderPosition, replace, remove} from '../utils/render.js';
+import { renderElement, RenderPosition, remove} from '../utils/render.js';
 import {UserAction, UpdateType} from '../consts.js';
 import {PointDataDefault} from '../consts.js';
 
 export default class TripPointNew {
-  constructor(tripMainContainer, changeData) {
+  constructor(tripMainContainer, changeData, destinationsModel, offersIndexModel) {
     this._tripMainContainer = tripMainContainer;
     this._changeData = changeData;
+    this._destinationsModel = destinationsModel;
+    this._offersIndexModel = offersIndexModel;
 
     this._tripPointEditComponent = null;
 
@@ -21,8 +22,7 @@ export default class TripPointNew {
     if (this._tripPointEditComponent !== null) {
       return;
     }
-
-    this._tripPointEditComponent = new EditFormView(PointDataDefault, '');
+    this._tripPointEditComponent = new EditFormView(PointDataDefault, '', this._destinationsModel, this._offersIndexModel);
 
     this._tripPointEditComponent.setSubmitForm(this._handleFormSubmit);
     this._tripPointEditComponent.setDeletePoint(this._handleDeleteClick);

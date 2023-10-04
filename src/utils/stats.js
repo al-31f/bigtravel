@@ -50,14 +50,13 @@ export const getTypePrices = (points, types) => {
 
   });
 
-//  console.log(formattedDuration);
+  //  console.log(formattedDuration);
   const stats = {
     price: pricesPerType,
     type: typeCount,
     time: durationPerType,
     timeFormatted: formattedDuration,
   };
-
-//  console.log(stats);
+  //  console.log(stats);
   return stats;
 };

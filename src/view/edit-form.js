@@ -57,42 +57,6 @@ const renderOffers = (data, offersData, offersIndexModel) => {
 };
 
 
-/*const renderOffers = (data, offersData) => {
-  let offers = '';
-  if (OFFER_TITLES[data.type] !== undefined) {
-
-    let isChecked = '';
-    for (let i = 0; i < OFFER_TITLES[data.type].length; i++) {
-      const isCheckedArray = new Array(OFFER_TITLES[data.type].length);
-      for (let j = 0; j < data.offers.length; j++) {
-        if (OFFER_TITLES[data.type][i] === offersData.filter((offerData) => offerData.id.toString() === data.offers[j].toString())[0].title) {
-        // если название оффера равно названию оффера, айди которого есть в массиве data.offers
-          isChecked = 'checked';
-          isCheckedArray[i] = isChecked;
-        }
-      }
-
-      const offer = `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${data.type}-${i}" type="checkbox" name="event-offer-luggage" ${isCheckedArray[i]}>
-      <label class="event__offer-label" for="event-offer-${data.type}-${i}">
-        <span class="event__offer-title">${OFFER_TITLES[data.type][i]}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${REAL_OFFER_PRICES[data.type][i]}</span>
-      </label>
-    </div>`;
-
-      offers = offers + offer;
-    }
-  }
-  //console.log(data.type);
-  if (data.offers.length > 0) {
-    //console.log('data', data.offers);
-  }
-
-  return offers;
-};
-*/
-
 const creatEeditFormTemplate = (data, offersData, destinationsModel, offersIndexModel) => `<li class="trip-events__item">
 <form class="event event--edit" action="#" method="post">
   <header class="event__header">

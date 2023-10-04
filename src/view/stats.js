@@ -6,7 +6,6 @@ import { getTypePrices, formatDuration } from '../utils/stats.js';
 
 
 const renderMoneyChart = (moneyCtx, points, offersIndexModel) => {
-  console.log(points);
   getTypePrices(points, POINT_TYPES);
   const moneyChart = new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
