@@ -33,7 +33,7 @@ const destinationsModel = new DestinationsIndexModel();
 const offersIndexModel = new OffersIndexModel();
 
 //создает и инициализирует экземпляр презентера
-const tripPresenter = new TripPresenter(tripHeaderElement, tripEventsElement, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel);
+const tripPresenter = new TripPresenter(tripHeaderElement, tripEventsElement, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel, api);
 const filterPresenter = new FilterPresenter(filtersElement, filterModel, pointsModel);
 tripPresenter.init();
 filterPresenter.init();
@@ -45,7 +45,7 @@ const newPointClickHandle = () => {
     tripPresenter.createPoint();
   });
 };
-
+newPointClickHandle();
 
 api.getOffers().then((offers) => offersModel.setOffers(UpdateType.INIT, offers)).catch(() => {
   offersModel.setOffers(UpdateType.INIT, []);
@@ -53,6 +53,7 @@ api.getOffers().then((offers) => offersModel.setOffers(UpdateType.INIT, offers))
 
 api.getPoints().then((points) => {
   pointsModel.setPoints(UpdateType.INIT, points);
+  console.log(points[0]);
 }).catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
 });
@@ -63,6 +64,4 @@ api.getOffersIndex().then((offersIndex) => {
 
 api.getDestinations().then((destinations) => {
   destinationsModel.setDestinations(UpdateType.INIT, destinations);
-  newPointClickHandle();
 });
-

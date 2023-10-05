@@ -4,6 +4,8 @@ import OffersModel from './model/offers.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 const SuccessHTTPStatusRange = {
@@ -17,6 +19,7 @@ export default class Api {
     this._authorization = authorization;
     this._pointsData = [];
     this._pointsData = this.getPointsData();
+    console.log(this._pointsData);
   }
 
 
@@ -61,6 +64,7 @@ export default class Api {
   */
 
   updatePoint(point) {
+    console.log(PointsModel.adaptToServer(point));
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
@@ -70,6 +74,26 @@ export default class Api {
       .then(Api.toJSON)
       .then(PointsModel.adaptToClient);
   }
+
+  addPoint(point) {
+    console.log(point, PointsModel.adaptToServer(point));
+    return this._load({
+      url: 'points',
+      method: Method.POST,
+      body: JSON.stringify(PointsModel.adaptToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    })
+      .then(Api.toJSON)
+      .then(PointsModel.adaptToClient);
+  }
+
+  deletePoint(point) {
+    return this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+    });
+  }
+
 
   _load({
     url,

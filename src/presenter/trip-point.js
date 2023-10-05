@@ -153,6 +153,8 @@ export default class TripPoint {
         },
       ),
     );
+    //console.log('fav', this._pointData);
+
   }
 
 }

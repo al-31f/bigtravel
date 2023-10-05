@@ -16,7 +16,7 @@ import TripStatsView from '../view/stats.js';
 const POINTS_NUMBER = 20;
 
 export default class Trip {
-  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel) {
+  constructor(tripInfoContainer, tripMainContainer, pointsModel, offersModel, filterModel, destinationsModel, offersIndexModel, api) {
     this._pointsModel = pointsModel;
     this._offersModel = offersModel;
     this._filterModel = filterModel;
@@ -29,6 +29,7 @@ export default class Trip {
     this._tripPointPresenter = {};
     this._currentSortType = SortType.DEFAULT;
     this._isLoading = true;
+    this._api = api;
 
     this._tripSortComponent = null;
     this._tripCostComponent = null;
@@ -45,10 +46,10 @@ export default class Trip {
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    //this._pointsModel.addObserver(this._handleModelEvent);
+    this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
     //this._offersIndexModel.addObserver(this._handleModelEvent);
-    this._destinationsModel.addObserver(this._handleModelEvent);
+    //this._destinationsModel.addObserver(this._handleModelEvent);
 
     this._tripPointNewPresenter = new TripPointNewPresenter(this._tripPointListComponent, this._handleViewAction, this._destinationsModel, this._offersIndexModel);
   }
@@ -106,19 +107,32 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._api.updatePoint(update).then((response) => {
+          console.log(response);
+          this._pointsModel.updatePoint(updateType, response);
+        });
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        //this._pointsModel.addPoint(updateType, update);
+        this._api.addPoint(update).then((response) => {
+          this._pointsModel.addPoint(updateType, response);
+        });
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        //this._pointsModel.deletePoint(updateType, update);
+        this._api.deletePoint(update).then(() => {
+          // Обратите внимание, метод удаления задачи на сервере
+          // ничего не возвращает. Это и верно,
+          // ведь что можно вернуть при удалении задачи?
+          // Поэтому в модель мы всё также передаем update
+          this._pointsModel.deletePoint(updateType, update);
+        });
         break;
     }
   }
 
   _handleModelEvent(updateType, data, specOfferData) {
-    console.log(updateType, data, specOfferData);
+    //console.log(updateType, data, specOfferData);
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:

@@ -96,7 +96,6 @@ export default class Points extends Observer {
     delete adaptedPoint.date_to;
     delete adaptedPoint.is_favorite;
     delete adaptedPoint.base_price;
-
     return adaptedPoint;
   }
 
@@ -114,7 +113,17 @@ export default class Points extends Observer {
           description: point.description,
           pictures: point.images,
         },
-      //  offers: дописать !!!
+        offers: [],
+        /* доделать[
+          {
+            title: 'Choose comfort class',
+            price: 5,
+          },
+          {
+            title: 'Choose comfort class',
+            price: 5,
+          },
+        ],*/
       },
     );
 

@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
 
 export const MILLISEC_IN_MINUTE = 60000;
 
@@ -32,7 +31,6 @@ export const FilterType = {
 };
 
 export const PointDataDefault = {
-  id: nanoid(),
   type: 'taxi',
   destination: '',
   begin: dayjs().toDate(),
@@ -40,7 +38,7 @@ export const PointDataDefault = {
   duration: 0,
   price: 0,
   description: '',
-  images: '',
+  images: [{src: 'http://picsum.photos/300/200?r=0.11985047947328398', description: 'Geneva biggest supermarket'}],
   favorite: false,
   offers: [],
 };
