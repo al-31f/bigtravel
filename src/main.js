@@ -20,10 +20,6 @@ const tripHeaderElement = document.querySelector('.trip-main');
 const tripEventsElement = document.querySelector('.trip-events');
 const filtersElement = document.querySelector('.trip-controls__filters');
 
-//генерируем данные
-//const pointsData = genPointsData();
-//const specOffersData = genSpecOffersData();
-
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const pointsModel = new PointsModel();
@@ -41,7 +37,7 @@ filterPresenter.init();
 const newPointClickHandle = () => {
   document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
     evt.preventDefault();
-    console.log('click');
+    //console.log('click');
     tripPresenter.createPoint();
   });
 };
@@ -53,7 +49,7 @@ api.getOffers().then((offers) => offersModel.setOffers(UpdateType.INIT, offers))
 
 api.getPoints().then((points) => {
   pointsModel.setPoints(UpdateType.INIT, points);
-  console.log(points[0]);
+  //console.log(points[0]);
 }).catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
 });

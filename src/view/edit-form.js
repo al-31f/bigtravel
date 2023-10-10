@@ -245,7 +245,7 @@ export default class EditForm extends SmartView {
     this.updateData({
       type : evt.target.value,
     });
-    console.log(this._pointState);
+    //console.log(this._pointState);
   }
 
   pointTypeChange(callback) {

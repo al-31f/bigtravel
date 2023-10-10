@@ -45,24 +45,4 @@ export default class Filter {
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
-  /*_getFilters() {
-    //const points = this._pointsModel.getPoints();
-
-    return [
-      {
-        type: FilterType.EVERYTHING,
-        name: 'Everything',
-      },
-      {
-        type: FilterType.FUTURE,
-        name: 'Future',
-      },
-      {
-        type: FilterType.PAST,
-        name: 'Past',
-      },
-    ];
-  }
-*/
-
 }

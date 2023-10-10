@@ -7,11 +7,6 @@ export default class Smart extends AbstractView {
     this._pointState = {};
   }
 
-
-  //удалить старый DOM-элемент компонента;
-  //создать новый DOM-элемент;
-  //поместить новый элемент вместо старого;
-  //восстановить обработчики событий, вызвав restoreHandlers.
   updateElement() {
     const previousElement = this.getElement();
     const parentElement = previousElement.parentElement;

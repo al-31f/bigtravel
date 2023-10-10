@@ -5,7 +5,8 @@ import {POINT_TYPES} from '../consts.js';
 import { getTypePrices, formatDuration } from '../utils/stats.js';
 
 
-const renderMoneyChart = (moneyCtx, points, offersIndexModel) => {
+const renderMoneyChart = (moneyCtx, points) => {
+  //console.log(points);
   getTypePrices(points, POINT_TYPES);
   const moneyChart = new Chart(moneyCtx, {
     plugins: [ChartDataLabels],
@@ -76,7 +77,7 @@ const renderMoneyChart = (moneyCtx, points, offersIndexModel) => {
 };
 
 
-const renderTypeChart = (typeCtx, points, offersIndexModel) => {
+const renderTypeChart = (typeCtx, points) => {
   const typeChart = new Chart(typeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -146,7 +147,7 @@ const renderTypeChart = (typeCtx, points, offersIndexModel) => {
 };
 
 
-const renderTimeChart = (timeCtx, points, offersIndexModel) => {
+const renderTimeChart = (timeCtx, points) => {
   const timeChart = new Chart(timeCtx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
@@ -256,8 +257,8 @@ export default class SiteMenu extends AbstractView {
     typeCtx.height = BAR_HEIGHT * 10;
     timeCtx.height = BAR_HEIGHT * 10;
 
-    this.moneyChart = renderMoneyChart(moneyCtx, this._points, this._offersIndexModel);
-    this.typeChart = renderTypeChart(typeCtx, this._points, this._offersIndexModel);
-    this.timeChart = renderTimeChart(timeCtx, this._points, this._offersIndexModel);
+    this.moneyChart = renderMoneyChart(moneyCtx, this._points);
+    this.typeChart = renderTypeChart(typeCtx, this._points);
+    this.timeChart = renderTimeChart(timeCtx, this._points);
   }
 }

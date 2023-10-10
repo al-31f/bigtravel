@@ -57,13 +57,13 @@ export default class TripPoint {
     this._tripPointEditComponent.setEditClickHandler(() => {
       this._tripPointEditComponent.resetInput(this._pointData);
       this._replaceEditFormToPoint();
-      console.log('click close');
+    //  console.log('click close');
     });
 
     //скрывает форму редактирования по сабмиту
     this._tripPointEditComponent.setSubmitForm(() => {
       this._replaceEditFormToPoint();
-      console.log('submit');
+      //  console.log('submit');
       this._changeData(
         UserAction.UPDATE_POINT,
         UpdateType.MINOR,
@@ -81,7 +81,7 @@ export default class TripPoint {
 
     //ввод города точки путешествия
     this._tripPointEditComponent.pointDestinationInput(() => {
-      console.log('change Input', this._tripPointComponent);
+    //  console.log('change Input', this._tripPointComponent);
     });
 
     //отрисовка точки после проверки
@@ -107,7 +107,7 @@ export default class TripPoint {
   _replacePointToEditForm() {
     this._tripPointComponent.setEditClickHandler(() => {
       replace(this._tripPointEditComponent,this._tripPointComponent);
-      console.log('click open');
+      //    console.log('click open');
       this._changeMode();
       this._mode = Mode.EDITING;
     });
@@ -126,7 +126,7 @@ export default class TripPoint {
         UpdateType.MINOR,
         point,
       );
-      console.log('del');
+      //console.log('del');
     });
   }
 

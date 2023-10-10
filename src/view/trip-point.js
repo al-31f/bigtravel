@@ -11,10 +11,8 @@ const renderOffer = (offers, point) => {
       oferrsArray = oferrsArray.concat(offers.filter((offer) => offer.id.toString() === point.offers[i].toString()));
 
     }
-    //console.log(offers.filter((offer) => offer.id.toString() === point.offers[0].toString()));
-    //console.log(oferrsArray);
-    //console.log(point.offers[0]);
   }
+
   for (let j = 0; j < oferrsArray.length; j++) {
     const singlOffer = ` <li class="event__offer">
     <span class="event__offer-title">${oferrsArray[j].title}</span>

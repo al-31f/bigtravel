@@ -36,9 +36,7 @@ export default class Trip {
 
     this._tripSiteMenuComponent = new SiteMenuView();
     this._tripStatsComponent = new TripStatsView(this._pointsModel.getPoints(), this._offersIndexModel);
-    //this._tripFiltersComponent = new FiltersView('past');
     this._tripInfoComponent = new TripInfoView();
-    //this._tripSortComponent = new TripSortView(this._currentSortType);
     this._tripPointListComponent = new TripPointListView();
     this._loadingComponent = new LoadingView();
     this._handleViewAction = this._handleViewAction.bind(this);
@@ -108,23 +106,17 @@ export default class Trip {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._api.updatePoint(update).then((response) => {
-          console.log(response);
+          //console.log(response);
           this._pointsModel.updatePoint(updateType, response);
         });
         break;
       case UserAction.ADD_POINT:
-        //this._pointsModel.addPoint(updateType, update);
         this._api.addPoint(update).then((response) => {
           this._pointsModel.addPoint(updateType, response);
         });
         break;
       case UserAction.DELETE_POINT:
-        //this._pointsModel.deletePoint(updateType, update);
         this._api.deletePoint(update).then(() => {
-          // Обратите внимание, метод удаления задачи на сервере
-          // ничего не возвращает. Это и верно,
-          // ведь что можно вернуть при удалении задачи?
-          // Поэтому в модель мы всё также передаем update
           this._pointsModel.deletePoint(updateType, update);
         });
         break;
@@ -132,7 +124,6 @@ export default class Trip {
   }
 
   _handleModelEvent(updateType, data, specOfferData) {
-    //console.log(updateType, data, specOfferData);
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
       case UpdateType.PATCH:
@@ -163,12 +154,9 @@ export default class Trip {
       return;
     }
     this._currentSortType = sortType;
-    console.log(sortType);
+    //console.log(sortType);
     this._clearBoard({resetRenderedTaskCount: true});
-
     this._renderBoard();
-    // - Очищаем список
-    // - Рендерим список заново
   }
 
   _renderSort() {
@@ -185,7 +173,6 @@ export default class Trip {
 
   _renderPoint(pointData, specOfferData) {
     //отрисовка одной точки
-    // const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleTripPointChange, this._handleModeChange);
     const tripPointPresenter = new TripPointPresenter(this._tripMainContainer, this._handleViewAction, this._handleModeChange, this._destinationsModel, this._offersIndexModel);
     tripPointPresenter.init(pointData, specOfferData);
     this._tripPointPresenter[pointData.id] = tripPointPresenter;
@@ -203,7 +190,7 @@ export default class Trip {
   }
 
   _renderNoPolints() {
-    console.log('no points');
+    //console.log('no points');
     // Метод для рендеринга заглушки
   }
 
@@ -264,6 +251,7 @@ export default class Trip {
     this._renderPoints(points.slice());
 
     //вывод экрана статистики
+    this._tripStatsComponent = new TripStatsView(this._pointsModel.getPoints(), this._offersIndexModel);
     renderElement(this._tripMainContainer, this._tripStatsComponent, RenderPosition.BEFOREEND);
 
     this.showTrip();
@@ -289,9 +277,9 @@ export default class Trip {
     menuItems.forEach((item) => {
       item.addEventListener('click', (evt) => {
         evt.preventDefault();
-        console.log(item.textContent);
+        //console.log(item.textContent);
         if (item.classList.contains('trip-tabs__btn--active')) {
-          console.log('nazhato uzhe');
+          //console.log('nazhato uzhe');
         } else {
           prevCheckedItem.classList.remove('trip-tabs__btn--active');
           prevCheckedItem = item;

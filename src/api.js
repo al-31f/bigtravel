@@ -19,7 +19,7 @@ export default class Api {
     this._authorization = authorization;
     this._pointsData = [];
     this._pointsData = this.getPointsData();
-    console.log(this._pointsData);
+    //console.log(this._pointsData);
   }
 
 
@@ -48,23 +48,9 @@ export default class Api {
     return this._load({url: 'offers'})
       .then(Api.toJSON);
   }
-  /*
-  getPoints() {
-    return this._load({url: 'points'})
-      .then(Api.toJSON)
-      .then((points) => points.map(PointsModel.adaptToClient));
-  }
-
-  getOffers() {
-    return this._load({url: 'points'})
-      .then(Api.toJSON)
-      .then(OffersModel.adaptToClient);
-  }
-
-  */
 
   updatePoint(point) {
-    console.log(PointsModel.adaptToServer(point));
+    //console.log(PointsModel.adaptToServer(point));
     return this._load({
       url: `points/${point.id}`,
       method: Method.PUT,
@@ -76,7 +62,7 @@ export default class Api {
   }
 
   addPoint(point) {
-    console.log(point, PointsModel.adaptToServer(point));
+    //console.log(point, PointsModel.adaptToServer(point));
     return this._load({
       url: 'points',
       method: Method.POST,
